@@ -8,6 +8,7 @@ namespace WorkoutManager.Data.Models
         public int Id { get; set; }
         public Workout? Workout { get; set; }
         public ExerciseType? ExerciseType { get; set; }
-        public DateTime? Date { get; set; }
+        public int Order { get; set; }
+        public Boolean Completed { get; set; } = false;
     }
 }
