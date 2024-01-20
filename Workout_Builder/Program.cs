@@ -5,9 +5,14 @@ using Workout_Builder.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+var workoutConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new NullReferenceException("No Connection string in config!");
+builder.Services.AddDbContextFactory<WorkoutContext>((DbContextOptionsBuilder options) =>
+    options.UseSqlServer(workoutConnectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
