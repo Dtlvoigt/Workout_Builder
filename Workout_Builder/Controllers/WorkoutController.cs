@@ -1,20 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using Workout_Builder.Models;
 
 namespace Workout_Builder.Controllers
 {
-    public class HomeController : Controller
+    public class WorkoutController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<WorkoutController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public WorkoutController(ILogger<WorkoutController> logger)
         {
             _logger = logger;
         }
 
         public IActionResult Index()
         {
+            //var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return View();
         }
 
