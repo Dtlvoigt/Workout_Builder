@@ -2,7 +2,7 @@
 {
     public class Sets
     {
-        public Exercise exercise {  get; set; }
+        public Exercise Exercise {  get; set; }
         public int Reps { get; set; }
         
     }

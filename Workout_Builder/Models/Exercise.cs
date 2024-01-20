@@ -7,7 +7,7 @@ namespace WorkoutManager.Data.Models
         [Key]
         public int Id { get; set; }
         public Workout? Workout { get; set; }
-        public DateTime Date { get; set; }
-
+        public ExerciseType? ExerciseType { get; set; }
+        public DateTime? Date { get; set; }
     }
 }
