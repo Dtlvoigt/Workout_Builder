@@ -9,20 +9,20 @@ namespace Workout_Builder.Controllers
 {
     public class WorkoutController : Controller
     {
-        private readonly IWorkoutService _data;
+        private readonly IWorkoutService _workoutContext;
         private readonly ILogger<WorkoutController> _logger;
 
         public WorkoutController(IWorkoutService data, ILogger<WorkoutController> logger)
         {
-            _data = data;
+            _workoutContext = data;
             _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("User is null");
-            var templates = await _data.GetWorkoutTemplates(userID).ConfigureAwait(false);
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("userID is null");
+            var templates = await _workoutContext.GetUserTemplates(userID).ConfigureAwait(false);
             var homeVM = new HomeViewModel()
             {
                 WorkoutTemplates = templates,
@@ -33,22 +33,35 @@ namespace Workout_Builder.Controllers
         [HttpGet]
         public async Task<IActionResult> NewWorkout()
         {
-            var newWorkout = new Workout();
-            newWorkout.IsTemplate = true;
-            var createVM = new FormViewModel()
+            var newWorkoutVM = new NewWorkoutVM()
             {
-                Workout = newWorkout
+                Workout = new Workout()
             };
 
-            return View(createVM);
+            return View(newWorkoutVM);
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewWorkout(FormViewModel createVM)
+        public async Task<IActionResult> NewWorkout(NewWorkoutVM newWorkoutVM)
         {
-            //add workout to database
+            if (ModelState.IsValid)
+            {
+                if (newWorkoutVM.Workout == null)
+                {
+                    throw new Exception("Workout is null");
+                }
 
-            return RedirectToAction("Index");
+                //create workout for current user
+                var userID = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("UserId is null");
+                newWorkoutVM.Workout.UserId = userID;
+
+                //add workout to database
+                await _workoutContext.AddWorkout(newWorkoutVM.Workout).ConfigureAwait(false);
+
+                return RedirectToAction("Index");
+            }
+
+            return View(newWorkoutVM);
         }
 
         public IActionResult Privacy()
