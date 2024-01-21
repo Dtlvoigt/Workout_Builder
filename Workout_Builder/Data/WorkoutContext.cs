@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkoutManager.Data.Models;
+using Workout_Builder.Models;
 
 namespace Workout_Builder.Data
 {
