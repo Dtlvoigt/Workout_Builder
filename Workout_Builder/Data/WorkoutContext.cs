@@ -3,14 +3,13 @@ using Workout_Builder.Models;
 
 namespace Workout_Builder.Data
 {
-    public class WorkoutContext : DbContext
+    public class WorkoutContext : DbContext, IWorkoutContext
     {
         public WorkoutContext(DbContextOptions<WorkoutContext> options) : base(options) { }
 
-        public DbSet<Workout> Workouts { get; set; }
-        public DbSet<ExerciseType> ExerciseTypes { get; set; }
-        public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<Set> Sets { get; set; }
-
+        public virtual DbSet<Workout> Workouts { get; set; }
+        public virtual DbSet<ExerciseType> ExerciseTypes { get; set; }
+        public virtual DbSet<Exercise> Exercises { get; set; }
+        public virtual DbSet<Set> Sets { get; set; }
     }
 }
