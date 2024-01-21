@@ -21,6 +21,12 @@ namespace Workout_Builder.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            //if the user isn't logged in, show them the login screen
+            if(User.Identity != null && !User.Identity.IsAuthenticated)
+            {
+                return Redirect("Identity/Account/Login");
+            }
+
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("userID is null");
             var templates = await _workoutContext.GetUserTemplates(userID).ConfigureAwait(false);
             var homeVM = new HomeViewModel()
