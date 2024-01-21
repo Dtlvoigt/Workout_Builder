@@ -1,4 +1,4 @@
-﻿@model Workout_Builder.ViewModels.FormViewModel
+﻿@model Workout_Builder.ViewModels.NewWorkoutVM
 
 @{
     ViewData["Title"] = "New Workout";
@@ -8,5 +8,14 @@
 
 
 <div>
-    
+    <form method="post" id="AddForm" enctype="multipart/form-data" onsubmit="return clientValidation()">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <label asp-for="Workout.Name" class="control-label">Workout Name</label>
+        <input asp-for="Workout.Name" type="text" class="form-control" />
+
+        @* <a id="backToSearchButton" asp-action="Search" class="btn btn-danger col-sm-4">Back</a> *@
+        <button id="submitForm" type="submit" class="btn-primary">Create Workout</button>
+
+    </form>
 </div>
