@@ -1,0 +1,10 @@
+﻿@model Workout_Builder.ViewModels.FormViewModel
+
+<form method="post" id="EditForm" enctype="multipart/form-data" onsubmit="return clientValidation()">
+
+    <label asp-for="ExerciseType.Name" class="control-label">Exercise</label>
+    <input asp-for="ExerciseType.Description" type="text" class="form-control" />
+
+
+
+</form>

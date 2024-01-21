@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorkoutManager.Data.Models
+namespace Workout_Builder.Models
 {
     public class Exercise
     {
