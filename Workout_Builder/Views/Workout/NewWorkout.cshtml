@@ -14,8 +14,40 @@
         <label asp-for="Workout.Name" class="control-label">Workout Name</label>
         <input asp-for="Workout.Name" type="text" class="form-control" />
 
-        @* <a id="backToSearchButton" asp-action="Search" class="btn btn-danger col-sm-4">Back</a> *@
-        <button id="submitForm" type="submit" class="btn-primary">Create Workout</button>
+        <div id="exercisesSection">
+            <h3 id="exercisesLabel">Exercises</h3>
+        </div>
 
+        <div>
+            <button id="addExercise" type="button" class="btn btn-primary">Add Exercise</button>
+        </div>
+
+        <br />
+        <button id="submitForm" type="submit" class="btn btn-primary">Create Workout</button>
     </form>
 </div>
+
+@section Scripts {
+    <script>
+        
+        var exerciseCount = 0;
+        $('#addExercise').click(function () {
+            $.ajax({
+                url: '/Workout/NewExercisePartial',
+                data: { orderNum : exerciseCount },
+                success: function (partialView) {
+                    $('#exercisesSection').append(partialView);
+                    exerciseCount++;
+
+                    //assign delete logic to new exercise
+                    $('.deleteExercise').click(function () {
+                        //remove item from model list
+
+                        $(this).parent().remove();
+                    });
+                }
+            });
+        });
+
+    </script>
+}

@@ -70,6 +70,15 @@ namespace Workout_Builder.Controllers
             return View(newWorkoutVM);
         }
 
+        public IActionResult NewExercisePartial(int orderNum)
+        {
+            var newExercise = new Exercise()
+            {
+                Order = orderNum
+            };
+            return PartialView("_NewExercise", newExercise);
+        }
+
         public IActionResult Privacy()
         {
             return View();

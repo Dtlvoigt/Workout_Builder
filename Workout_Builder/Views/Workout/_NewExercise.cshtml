@@ -1,0 +1,42 @@
+﻿@model Exercise
+
+@{
+    var divId = "newExercise" + Model.Order;
+}
+<div id="@divId" class="row">
+    <br />
+    <div class="action-item col-sm-4 target">
+        <div class="form-group">
+            <label class="control-label">Exercise Name</label>
+            <input id="exerciseNameInput" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="action-item col-sm-4 target">
+        <div class="form-group">
+            <label class="control-label">Number of sets</label>
+            <input id="setAmountInput" type="number" class="form-control" />
+        </div>
+    </div>
+    <div class="action-item col-sm-4 target">
+        <div class="form-group">
+            <label asp-for="Completed" class="control-label">Completed?</label>
+            <input asp-for="Completed" class="form-check-input" id="completedCheck" />
+        </div>
+    </div>
+
+    <button type="button" class="deleteExercise btn btn-danger col-sm-2">Delete Exercise</button>
+</div>
+
+
+@* 
+<script type="text/javascript">
+    
+    //
+    // $('.deleteExercise').click(function () {
+    //     //remove item from model list
+
+
+    //     $(this).parent().remove();
+    // });
+</script> *@
+
