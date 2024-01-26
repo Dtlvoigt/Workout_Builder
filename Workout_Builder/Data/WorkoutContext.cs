@@ -10,6 +10,6 @@ namespace Workout_Builder.Data
         public virtual DbSet<Workout> Workouts { get; set; }
         public virtual DbSet<ExerciseType> ExerciseTypes { get; set; }
         public virtual DbSet<Exercise> Exercises { get; set; }
-        public virtual DbSet<Set> Sets { get; set; }
+        //public virtual DbSet<Set> Sets { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace Workout_Builder.Data
         DbSet<Workout> Workouts { get; set; }
         DbSet<ExerciseType> ExerciseTypes { get; set; }
         DbSet<Exercise> Exercises { get; set; }
-        DbSet<Set> Sets { get; set; }
+        //DbSet<Set> Sets { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
