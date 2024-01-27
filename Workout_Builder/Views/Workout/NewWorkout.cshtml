@@ -11,8 +11,11 @@
     <form method="post" id="AddForm" enctype="multipart/form-data" onsubmit="return clientValidation()">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <label asp-for="Workout.Name" class="control-label">Workout Name</label>
-        <input asp-for="Workout.Name" type="text" class="form-control" />
+        <div class="form-group">
+            <label asp-for="Workout.Name" class="control-label">Workout Name</label>
+            <input asp-for="Workout.Name" type="text" class="form-control" />
+            <span id="noNameError" class="text-danger" style="display:none;">Workout name is required.</span>
+        </div>
 
         <div id="exercisesSection">
             <h3 id="exercisesLabel">Exercises</h3>
@@ -23,18 +26,58 @@
         </div>
 
         <br />
-        <button id="submitForm" type="submit" class="btn btn-primary">Create Workout</button>
+        <button id="submitButton" type="button" class="btn btn-primary" onclick="PrepareClientValidation()">Create Workout</button>
+        <div id="submitSpinner" class="spinner-border text-primary" role="status" hidden></div>
     </form>
 </div>
 
+<button type="button" onclick="getExercises()">Names</button>
+
 @section Scripts {
     <script>
+
+        var valid = false;
+        var doubleSubmit = false;
+        function PrepareClientValidation() {
+
+            //disable buttons and show spinner
+            $('#submitButton').prop('disabled', true);
+            //$('#backToSearchButton').prop('disabled', true);
+            $("#submitSpinner").prop('hidden', false);
+
+            //a timeout is used to force the submit button to be disabled and show the spinner
+            setTimeout(function () {
+                ClientValidation();
+            }, 1);
+        }
+
+        function ClientValidation() {
+            alert("validation");
+
+
+            //if all fields are ok, submit form to controller
+            if (valid && !doubleSubmit) {
+                doubleSubmit = true;
+                SubmitToController();
+                //document.getElementById("submitSearchButton").click();
+            }
+            else {
+                $('#submitButton').prop('disabled', false);
+                //$('#backToSearchButton').prop('disabled', false);
+                $("#submitSpinner").prop('hidden', true);
+                valid = false;
+            }
+        }
+
+        function SubmitToController() {
+
+        }
         
         var exerciseCount = 0;
         $('#addExercise').click(function () {
             $.ajax({
                 url: '/Workout/NewExercisePartial',
-                data: { orderNum : exerciseCount },
+                data: {orderNum:exerciseCount},
                 success: function (partialView) {
                     $('#exercisesSection').append(partialView);
                     exerciseCount++;
@@ -48,6 +91,29 @@
                 }
             });
         });
+
+        function getExercises() {
+            //alert('hi');
+            //var exercises = [];
+
+            const ExerciseNames = $('.ExerciseName').get().map(function (name) {
+                return name.value;
+            });
+            // var ExerciseNames = $('.ExerciseName');
+            //alert(ExerciseNames.length);
+            // for (var i = 0; i < ExerciseNames.length; i++) {
+            //     alert(ExerciseNames[i]);
+            // }
+
+            $.ajax({
+                type: 'POST',
+                data: { strings: ExerciseNames },
+                url: '/Workout/PartialTest',
+                success: function (e) {
+                    alert("success");
+                }
+            });
+        };
 
     </script>
 }

@@ -1,14 +1,11 @@
 ﻿@model Exercise
 
-@{
-    var divId = "newExercise" + Model.Order;
-}
-<div id="@divId" class="row">
+<div id="newExercise_@Model.Order" class="row">
     <br />
     <div class="action-item col-sm-4 target">
         <div class="form-group">
             <label class="control-label">Exercise Name</label>
-            <input id="exerciseNameInput" type="text" class="form-control" />
+            <input id="exerciseNameInput" type="text" class="form-control ExerciseName" />
         </div>
     </div>
     <div class="action-item col-sm-4 target">
