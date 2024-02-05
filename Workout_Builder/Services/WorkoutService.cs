@@ -1,7 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
+using System.IO;
+using System.Web;
 using Workout_Builder.Data;
 using Workout_Builder.Models;
+using Workout_Builder.Properties;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+//using Humanizer.Localisation;
 
 namespace Workout_Builder.Services
 {
@@ -79,6 +85,22 @@ namespace Workout_Builder.Services
             await _dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
+        public async Task AddExerciseTypes(List<ExerciseType> exerciseTypes)
+        {
+            if (exerciseTypes == null)
+            {
+                throw new Exception("Exercise type list is empty.");
+            }
+
+            foreach(var exerciseType in exerciseTypes)
+            {
+                exerciseType.LastUpdated = DateTime.Now;
+            }
+
+            await _dbContext.ExerciseTypes.AddRangeAsync(exerciseTypes).ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+
         ///////////////////////////////
         // non specific workout info //
         ///////////////////////////////
@@ -90,8 +112,40 @@ namespace Workout_Builder.Services
         }
 
 
+
+
         ///////////////
         // user info //
         ///////////////
+
+        //////////////////
+        // file loading //
+        //////////////////
+
+        public async Task LoadExerciseTypes()
+        {
+            string filename = "..\\Workout_Builder\\Data\\JSON\\exerciseTypes.json";
+            List<ExerciseType>? exerciseTypes;
+
+            using (StreamReader file = new StreamReader(filename))
+            {
+                string json = file.ReadToEnd();
+                JsonNode? node = JsonNode.Parse(json);
+                JsonNode root = node.Root;
+                JsonArray exerciseArray = root["exercises"]!.AsArray();
+                int count = exerciseArray.Count;
+                exerciseTypes = JsonSerializer.Deserialize<List<ExerciseType>>(root["exercises"]);
+            }
+
+            if(exerciseTypes != null && exerciseTypes.Count > 0)
+            {
+                await AddExerciseTypes(exerciseTypes);
+            }
+
+            return;
+        }
+
+
+
     }
 }

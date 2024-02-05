@@ -11,9 +11,13 @@ namespace Workout_Builder.Services
 
         //updating workouts
         System.Threading.Tasks.Task AddWorkout(Workout workout);
+        System.Threading.Tasks.Task AddExerciseTypes(List<ExerciseType> exerciseTypes);
 
         //non specific workout info
 
         //user info
+
+        //file loading
+        System.Threading.Tasks.Task LoadExerciseTypes();
     }
 }
