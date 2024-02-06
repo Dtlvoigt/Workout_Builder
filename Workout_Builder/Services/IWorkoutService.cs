@@ -14,6 +14,7 @@ namespace Workout_Builder.Services
         System.Threading.Tasks.Task AddExerciseTypes(List<ExerciseType> exerciseTypes);
 
         //non specific workout info
+        Task<List<ExerciseType>> AutofillExerciseTypes(string input);
 
         //user info
 

@@ -111,7 +111,16 @@ namespace Workout_Builder.Services
             return exerciseType;
         }
 
+        public async Task<List<ExerciseType>> AutofillExerciseTypes(string input)
+        {
+            var exerciseTypes = await _dbContext.ExerciseTypes.Where(e => (!String.IsNullOrEmpty(e.Name)) 
+                                                               && (e.Name.Contains(input)))
+                                                              .OrderBy(e => e.Name)
+                                                              .ToListAsync()
+                                                              .ConfigureAwait(false);
 
+            return exerciseTypes;
+        }
 
 
         ///////////////

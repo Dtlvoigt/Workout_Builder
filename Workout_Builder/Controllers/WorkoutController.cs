@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Text;
 using Workout_Builder.Models;
+using Workout_Builder.Properties;
 using Workout_Builder.Services;
 using Workout_Builder.ViewModels;
 
@@ -77,6 +79,33 @@ namespace Workout_Builder.Controllers
                 Order = orderNum
             };
             return PartialView("_NewExercise", newExercise);
+        }
+
+        [HttpPost]
+        public async Task<string> FillAutoCompleteExercises(string input, int order)
+        {
+            var exercises = await _workoutContext.AutofillExerciseTypes(input);
+            StringBuilder sb = new StringBuilder();
+
+            if(exercises != null && exercises.Count > 0) 
+            {
+                sb.Append("<select id=\"autoCompleteSelect_" + order + "\" size=\"5\">");
+
+                foreach(var exercise in exercises)
+                {
+                    sb.Append("<option value=\"" + exercise.Id + "\">" + exercise.Name + "</option>");
+                }
+
+                sb.Append("</select>");
+            }
+
+            return sb.ToString();
+        }
+
+        [HttpPost]
+        public IActionResult PartialTest(string[] strings)
+        {
+            return PartialView("_NewExercise", new Exercise());
         }
 
         public IActionResult Privacy()
