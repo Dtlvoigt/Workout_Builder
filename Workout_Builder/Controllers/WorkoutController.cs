@@ -43,8 +43,34 @@ namespace Workout_Builder.Controllers
         {
             var newWorkoutVM = new NewWorkoutVM()
             {
-                Workout = new Workout()
+                Workout = new Workout(),
+                Exercises = new List<Exercise>(),
+                ExerciseModels = new List<NewExerciseViewModel>(),
+                NewExercise = new Exercise(),
+                AddExercise = false,
             };
+
+            //newWorkoutVM.E
+
+
+            //newWorkoutVM.ExerciseModels.Add(new NewExerciseViewModel()
+            //{
+            //    Deleted = false,
+            //    Exercise = new Exercise()
+            //    {
+            //        NumSets = 1
+            //    },
+            //    ExerciseList = await _workoutContext.GetExerciseSelectList(),
+            //});
+
+
+
+            //var testExercise = new Exercise()
+            //{
+            //    Completed = true,
+            //    IsPounds = true,
+            //};
+            //newWorkoutVM.Exercises.Add(testExercise);
 
             return View(newWorkoutVM);
         }
@@ -52,6 +78,44 @@ namespace Workout_Builder.Controllers
         [HttpPost]
         public async Task<IActionResult> NewWorkout(NewWorkoutVM newWorkoutVM)
         {
+            //remove deleted exercises
+            //newWorkoutVM.Exercises.RemoveAll(e => e.NumSets == 0);
+
+            //if the user added a new exercise, return the viewmodel
+            if (newWorkoutVM.AddExercise == true)
+            {
+                //foreach (var exercise in  newWorkoutVM.Exercises)
+                //{
+                //    if (exercise.NumSets == 0)
+                //    {
+                //        newWorkoutVM.Exercises.Remove(exercise);
+                //    }
+                //}
+
+                //add new exercise
+                //newWorkoutVM.Exercise.Add(new Exercise()
+                //{
+                //    NumSets = 1,
+                //});
+                //newWorkoutVM.ExerciseModels.ForEach(async e => { e.ExerciseList = await _workoutContext.GetExerciseSelectList(); });
+                foreach(var exerciseModel in newWorkoutVM.ExerciseModels)
+                {
+                    exerciseModel.ExerciseList = await _workoutContext.GetExerciseSelectList().ConfigureAwait(false);
+                }
+
+                newWorkoutVM.ExerciseModels.Add(new NewExerciseViewModel()
+                {
+                    Deleted = false,
+                    Exercise = new Exercise()
+                    {
+                        NumSets = 1
+                    },
+                    ExerciseList = await _workoutContext.GetExerciseSelectList(),
+                });
+
+                return View(newWorkoutVM);
+            }
+
             if (ModelState.IsValid)
             {
                 if (newWorkoutVM.Workout == null)
@@ -59,12 +123,16 @@ namespace Workout_Builder.Controllers
                     throw new Exception("Workout is null");
                 }
 
+                //remove deleted exercises
+                newWorkoutVM.ExerciseModels.RemoveAll(e => e.Deleted == true);
+
                 //create workout for current user
                 var userID = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("UserId is null");
                 newWorkoutVM.Workout.UserId = userID;
 
                 //add workout to database
-                await _workoutContext.AddWorkout(newWorkoutVM.Workout).ConfigureAwait(false);
+                int workoutID = await _workoutContext.AddWorkout(newWorkoutVM.Workout).ConfigureAwait(false);
+                newWorkoutVM.ExerciseModels.ForEach(e => { e.Exercise.Workout.Id = workoutID; });
 
                 return RedirectToAction("Index");
             }
@@ -89,7 +157,7 @@ namespace Workout_Builder.Controllers
 
             if(exercises != null && exercises.Count > 0) 
             {
-                sb.Append("<select id=\"autoCompleteSelect_" + order + "\" size=\"5\">");
+                sb.Append("<select class=\"ExerciseNameSelectList\" id=\"autoCompleteSelect_" + order + "\" size=\"5\">");
 
                 foreach(var exercise in exercises)
                 {
