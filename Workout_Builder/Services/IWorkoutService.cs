@@ -1,4 +1,5 @@
-﻿using Workout_Builder.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Workout_Builder.Models;
 
 namespace Workout_Builder.Services
 {
@@ -10,15 +11,16 @@ namespace Workout_Builder.Services
 
 
         //updating workouts
-        System.Threading.Tasks.Task AddWorkout(Workout workout);
-        System.Threading.Tasks.Task AddExerciseTypes(List<ExerciseType> exerciseTypes);
+        Task<int> AddWorkout(Workout workout);
+        Task AddExerciseTypes(List<ExerciseType> exerciseTypes);
 
         //non specific workout info
         Task<List<ExerciseType>> AutofillExerciseTypes(string input);
+        Task<List<SelectListItem>> GetExerciseSelectList();
 
         //user info
 
         //file loading
-        System.Threading.Tasks.Task LoadExerciseTypes();
+        Task LoadExerciseTypes();
     }
 }

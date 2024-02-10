@@ -7,6 +7,7 @@ using Workout_Builder.Models;
 using Workout_Builder.Properties;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Mvc.Rendering;
 //using Humanizer.Localisation;
 
 namespace Workout_Builder.Services
@@ -67,7 +68,7 @@ namespace Workout_Builder.Services
         // updating workouts //
         ///////////////////////
 
-        public async Task AddWorkout(Workout workout)
+        public async Task<int> AddWorkout(Workout workout)
         {
             if (workout == null)
             {
@@ -83,6 +84,8 @@ namespace Workout_Builder.Services
 
             await _dbContext.Workouts.AddAsync(workout).ConfigureAwait(false);
             await _dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+
+            return workout.Id;
         }
 
         public async Task AddExerciseTypes(List<ExerciseType> exerciseTypes)
@@ -109,6 +112,17 @@ namespace Workout_Builder.Services
             var exerciseType = _dbContext.ExerciseTypes.FirstOrDefault(x => x.Name == name) 
                 ?? throw new Exception("Exercise " + name + " not found.");
             return exerciseType;
+        }
+
+        public async Task<List<SelectListItem>> GetExerciseSelectList()
+        {
+            var selectList = _dbContext.ExerciseTypes.Select(e =>
+                                                         new SelectListItem
+                                                         {
+                                                             Value = e.Id.ToString(),
+                                                             Text = e.Name,
+                                                         }).ToListAsync().ConfigureAwait(false);
+            return await selectList;
         }
 
         public async Task<List<ExerciseType>> AutofillExerciseTypes(string input)
