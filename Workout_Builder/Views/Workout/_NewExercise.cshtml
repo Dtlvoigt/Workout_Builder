@@ -80,15 +80,6 @@
                 if (result != "") {
                     element.html(result);
                     element.show();
-
-                    $(".ExerciseNameSelectList").on("change", function () {
-                        var str = "";
-                        $(this).find(":selected").each(function () {
-                            str += $(this).text() + " ";
-                        });
-                        // alert(str);
-                        $(this).parent().parent().find(".ExerciseName").val(str);
-                    });
                 }
                 else {
                     //alert("No results");
@@ -128,6 +119,15 @@
                 $(this).parent().find(".AutoCompleteDiv").hide();
             }
         }
+    });
+
+    //if an option on a selectlist is selected then the name field will be updated to match it
+    $(".AutoCompleteDiv").on("change", function () {
+        var str = "";
+        $(this).find(".ExerciseNameSelectList").find(":selected").each(function () {
+            str += $(this).text() + " ";
+        });
+        $(this).parent().find(".ExerciseName").val(str);
     });
 
     //$(".ExerciseNameSelectList").on("change", function () {
