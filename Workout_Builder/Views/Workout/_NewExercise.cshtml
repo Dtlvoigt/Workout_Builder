@@ -1,39 +1,153 @@
 ﻿@model Exercise
+@* @model Workout_Builder.ViewModels.NewExerciseViewModel *@
 
-<div id="newExercise_@Model.Order" class="row">
+
+<div class="row ExerciseDiv">
     <br />
-    <div class="action-item col-sm-4 target">
+    @* <div class="action-item col-sm-4 target">
         <div class="form-group">
             <label class="control-label">Exercise Name</label>
             <input id="exerciseNameInput" type="text" class="form-control ExerciseName" />
         </div>
+    </div> *@
+    <div class="action-item col-sm-4 target">
+        <div class="form-group">
+            <label class="control-label">Exercise Name</label>
+            <input type="search" class="form-control ExerciseName" autocomplete="off" />
+            <div class="AutoCompleteDiv"></div>
+        </div>
     </div>
     <div class="action-item col-sm-4 target">
         <div class="form-group">
-            <label class="control-label">Number of sets</label>
-            <input id="setAmountInput" type="number" class="form-control" />
+            <label asp-for="NumSets" class="control-label">Number of sets</label>
+            <input asp-for="NumSets" type="number" class="form-control" />
         </div>
     </div>
+
     <div class="action-item col-sm-4 target">
         <div class="form-group">
             <label asp-for="Completed" class="control-label">Completed?</label>
-            <input asp-for="Completed" class="form-check-input" id="completedCheck" />
+            <input asp-for="Completed" class="form-check-input" />
         </div>
     </div>
 
+    @* hidden model properties *@
+    <input asp-for="Order" class="OrderInput" hidden />
+
     <button type="button" class="deleteExercise btn btn-danger col-sm-2">Delete Exercise</button>
+    @* <button type="button" class="AutoFill btn btn-danger col-sm-2">Auto Fill</button> *@
 </div>
 
 
-@* 
-<script type="text/javascript">
+<script>
+
     
-    //
-    // $('.deleteExercise').click(function () {
-    //     //remove item from model list
+    $(document).ready(function () {
+        //FillAutoCompleteBox("bench press");
+    });
 
+    // function FillAutoCompleteBox(value) {
+    //     alert(value);
+    //     $.ajax({
+    //         type: "POST",
+    //         url: 
+    //         contentType: "application/json; charset=utf-8",
+    //         dataType: "html",
+    //         success: function (result, status, xhr) {
+    //             if (result != "") {
+    //                 alert(result);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             alert(xhr + " " + status + " " + error);
+    //         }
+    //     });
+    // }
 
-    //     $(this).parent().remove();
+    //autocomplete name search
+    // var inputID = "#exerciseNameInput_" + Model.Order;
+    // var selectDivID = "#autoCompleteDiv_" + Model.Order;
+    // var selectID = "#autoCompleteSelect_" + Model.Order;
+
+    function FillAutoCompleteBox(element, value, orderNum) {
+        //alert(element + value + orderNum);
+        //alert($(element)[0].id);
+        $.ajax({
+            type: "POST",
+            data: { input: value, order: orderNum },
+            url: '/Workout/FillAutoCompleteExercises',
+            success: function (result, status, xhr) {
+                if (result != "") {
+                    element.html(result);
+                    element.show();
+
+                    $(".ExerciseNameSelectList").on("change", function () {
+                        var str = "";
+                        $(this).find(":selected").each(function () {
+                            str += $(this).text() + " ";
+                        });
+                        // alert(str);
+                        $(this).parent().parent().find(".ExerciseName").val(str);
+                    });
+                }
+                else {
+                    //alert("No results");
+                    //element.html("");
+                    element.hide();
+                }
+            },
+            error: function (xhr, status, error) {
+                alert(xhr + " " + status + " " + error);
+            }
+        });
+    }
+    
+    //$("#exerciseNameInput_" + Model.Order).keyup(function (e) {
+    $('.ExerciseName').keyup(function (e) {
+        //var inputField = 
+        //var selectDiv = $(this).parent().find(".AutoCompleteDiv");
+        var selectList = $(this).parent().find(".ExerciseNameSelectList");
+        if (e.which == 40) {
+            //alert('name');
+            //$(selectID).val($(selectID + " option:first").val());
+            //$(selectID).focus();
+            //$(this).val($(selectID + " :selected").text());
+            //selectDiv.val(selectDiv.find("option:first").val());
+            selectList.val(selectList.prop("selectedIndex", 0).val());
+            selectList.focus();
+            $(this).val(selectList.find(":selected").text());
+        }
+        else {
+            //alert('else');
+            if ($(this).val().length > 2) {
+                //alert('name');
+                FillAutoCompleteBox($(this).parent().find(".AutoCompleteDiv"), $(this).val(), @Model.Order);
+            }
+            else {
+                //alert('hide');
+                $(this).parent().find(".AutoCompleteDiv").hide();
+            }
+        }
+    });
+
+    //$(".ExerciseNameSelectList").on("change", function () {
+        //alert("change");
+        // var str = "";
+        // $(this).find(":selected").each(function () {
+        //     str += $(this).text() + " ";
+        // });
+        // alert(str);
+        // $(this).parent().parent().find(".ExerciseName").text(str);
+    //});
+
+    // $(".AutoCompleteDiv").on("change", find(".ExerciseNameSelectList"), function () {
+    //     $(this).parent().find(".ExerciseName").val($(this).find(".ExerciseNameSelectList").val().split(' ')[0]);
     // });
-</script> *@
+
+    //hide dropdown if user clicks elsewhere
+    $(document).click(function (e) {
+        $(".AutoCompleteDiv").hide();
+    });
+
+</script>
 

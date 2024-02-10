@@ -8,7 +8,7 @@
 
 
 <div>
-    <form method="post" id="AddForm" enctype="multipart/form-data" onsubmit="return clientValidation()">
+    <form method="post" id="addForm" enctype="multipart/form-data" onsubmit="return clientValidation()">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="form-group">
@@ -19,6 +19,45 @@
 
         <div id="exercisesSection">
             <h3 id="exercisesLabel">Exercises</h3>
+            @{
+                // for(int i = 0; i < model.exercisemodels.count; i++)
+                // {
+                //     var exercise = model.exercisemodels[i].exercise;
+                //     var hiddendivstyling = "";
+                //     if(model.exercisemodels[i].deleted)
+                //     {
+                //         <partial name="_newexercise.cshtml" for="exercisemodels[i]" />
+                //         //hiddendivstyling = "display:none;";
+                //     }
+                //     // <div id="exercisediv_@model.exercisemodels[i]" style="@hiddendivstyling">
+
+                //     //     <div class="form-group">
+                //     //         <label asp-for="exercisemodels[i].exerciselist" class="control-label">exercise name</label>
+                //     //         <select asp-items="model.exercisemodels[i].exerciselist" asp-for="exercisemodels[i].selectedexercise" class="form-select" ></select>
+                //     //         <span id="nonameerror" class="text-danger" style="display:none;">workout name is required.</span>
+                //     //     </div>
+                //     //     <div class="form-group">
+                //     //         <label asp-for="exercisemodels[i].exercise.numsets" class="control-label">number of sets</label>
+                //     //         <input asp-for="exercisemodels[i].exercise.numsets" type="number" class="form-control" />
+                //     //         <span id="nonameerror" class="text-danger" style="display:none;">workout name is required.</span>
+                //     //     </div>
+                //     //     <div class="form-group">
+                //     //         <label asp-for="exercisemodels[i].exercise.completed" class="control-label">completed?</label>
+                //     //         <input asp-for="exercisemodels[i].exercise.completed" class="form-check-input" />
+                //     //     </div>
+
+                //     //     <button type="button" class="deleteexercisebutton btn btn-danger col-sm-2">delete exercise</button>
+
+                //     //     <div>
+                //     //         <input class="deletedexercise" asp-for="exercisemodels[i].deleted" hidden/>
+                //     //         <input class="" asp-for="exercisemodels[i].exerciselist" hidden />
+                //     //     </div>
+                //     // </div>
+                    
+                // }
+
+                // <partial name="_NewExercise.cshtml" for="NewExercise" />
+            }
         </div>
 
         <div>
@@ -27,19 +66,46 @@
 
         <br />
         <button id="submitButton" type="button" class="btn btn-primary" onclick="PrepareClientValidation()">Create Workout</button>
+        <button id="submitForm" type="submit" hidden></button>
         <div id="submitSpinner" class="spinner-border text-primary" role="status" hidden></div>
+        
+        @* hidden model properties *@
+        <div>
+            <input id="addExerciseInput" asp-for="AddExercise"  hidden />
+            @* <input asp-for="Exercises" hidden /> *@
+        </div>
     </form>
 </div>
 
-<button type="button" onclick="getExercises()">Names</button>
+
+@* <button type="button" onclick="getExercises()">Names</button> *@
 
 @section Scripts {
     <script>
 
+        $(document).ready(function () {
+
+            //prevents pressing Enter to submit form
+            $("#addForm").on("keypress", function (e) {
+                return e.keyCode != 13;
+            });
+
+            //creates first exercise
+            $('#addExercise').click();
+
+        //     //assign delete logic to exercises
+        //     $('.DeleteExerciseButton').click(function () {
+        //         //hide div and mark it for deletion
+        //         $(this).parent().hide();
+        //         $(this).parent().find(".DeletedExercise").prop('checked', true);
+        //     });
+
+        });
+
         var valid = false;
         var doubleSubmit = false;
         function PrepareClientValidation() {
-
+            
             //disable buttons and show spinner
             $('#submitButton').prop('disabled', true);
             //$('#backToSearchButton').prop('disabled', true);
@@ -52,8 +118,8 @@
         }
 
         function ClientValidation() {
-            alert("validation");
-
+            //alert("validation");
+            valid = true;
 
             //if all fields are ok, submit form to controller
             if (valid && !doubleSubmit) {
@@ -70,7 +136,16 @@
         }
 
         function SubmitToController() {
+            //alert("submit");
+            $('#addExerciseInput').prop('checked', false);
+            $("#submitForm").click();
+        }
 
+        //set the bool AddExercise so that the controller knows to add the new exercise to the model
+        function AddNewExerciseSubmit() {
+            //alert("add");
+            $('#addExerciseInput').prop('checked', true);
+            $("#submitForm").click();
         }
         
         var exerciseCount = 0;
@@ -113,7 +188,13 @@
                     alert("success");
                 }
             });
-        };
+        }
+
+        // function TriggerAutoComplete() {
+        //     FillAutoCompleteBox('squat');
+        // }
+
+        
 
     </script>
 }
