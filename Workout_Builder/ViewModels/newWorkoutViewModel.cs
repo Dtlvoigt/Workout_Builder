@@ -6,7 +6,10 @@ namespace Workout_Builder.ViewModels
     {
         public Workout Workout { get; set; }
         public List<Workout> CurrentTemplates { get; set; }
+        public List<NewExerciseViewModel> ExerciseModels { get; set; }
         public List<Exercise> Exercises { get; set; }
+        public Exercise NewExercise { get; set; }
+        public Boolean AddExercise { get; set; }
         //public List<Set> Sets { get; set; }
         //public Exercise Exercise { get; set; }
         //public ExerciseType ExerciseType { get; set; }
