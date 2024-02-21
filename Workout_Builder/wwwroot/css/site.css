@@ -39,3 +39,7 @@ body {
 .HideOnLoad {
     display: none;
 }
+
+.Inline {
+    display: inline-block;
+}
