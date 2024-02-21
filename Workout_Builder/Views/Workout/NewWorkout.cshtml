@@ -159,9 +159,7 @@
 
                     //assign delete logic to new exercise
                     $('.deleteExercise').click(function () {
-                        //remove item from model list
-
-                        $(this).parent().remove();
+                        $(this).parent().parent().parent().remove();
                     });
                 }
             });

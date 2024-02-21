@@ -5,43 +5,113 @@
 <div class="row ExerciseDiv">
     <br />
     @* <div class="action-item col-sm-4 target">
-        <div class="form-group">
-            <label class="control-label">Exercise Name</label>
-            <input id="exerciseNameInput" type="text" class="form-control ExerciseName" />
-        </div>
+    <div class="form-group">
+    <label class="control-label">Exercise Name</label>
+    <input id="exerciseNameInput" type="text" class="form-control ExerciseName" />
+    </div>
     </div> *@
-    <div class="action-item col-sm-4 target">
-        <div class="form-group">
-            <label class="control-label">Exercise Name</label>
-            <input type="search" class="form-control ExerciseName" autocomplete="off" />
-            <div class="AutoCompleteDiv"></div>
+    <div class="row NewExerciseInputs">
+        <div class="action-item col-sm-4 target">
+            <div class="form-group">
+                <label class="control-label">Exercise Name</label>
+                <input type="search" class="form-control ExerciseName" autocomplete="off" />
+                <div class="AutoCompleteDiv"></div>
+            </div>
         </div>
-    </div>
-    <div class="action-item col-sm-4 target">
+        @* <div class="action-item col-sm-4 target">
         <div class="form-group">
-            <label asp-for="NumSets" class="control-label">Number of sets</label>
-            <input asp-for="NumSets" type="number" class="form-control" />
+        <label asp-for="NumSets" class="control-label">Number of sets</label>
+        <input asp-for="NumSets" type="number" class="form-control" />
         </div>
+        </div> *@
+        <div class="action-item col-sm-2 target">
+            <div class="form-group">
+                <label asp-for="NumSets" class="control-label">Number of sets</label>
+                <select class="form-select NumSetsInput" aria-label="Default select" asp-for="NumSets">
+                    <option selected value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="action-item col-sm-2 target">
+            <div class="form-group">
+                <label class="control-label">Number of reps</label>
+                <input type="number" class="form-control MasterRepsInput" />
+            </div>
+        </div>
+
+        <div class="action-item col-sm-2 target">
+            <div class="form-group">
+                <label class="control-label">Weight</label>
+                <div style="display: flex;">
+                    <input type="number" class="form-control MasterWeightInput" style="flex: 1;" />
+                    <span style="flex: 1;">&nbsp Lbs</span>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <div class="row CustomRowSets HideOnLoad">
+        @{
+            for (int i = 0; i < 9; i++)
+            {
+                int setNumber = i + 1;
+                <div class="CustomSetRow CustomSet_@i HideOnLoad">
+                    <span class="SetNumberSpan">Set @setNumber</span>
+                    <div class="action-item col-sm-2 Inline">
+                        <div class="form-group">
+                            <label class="control-label">Number of reps</label>
+                            <input type="number" class="form-control RepsInput" />
+                        </div>
+                    </div>
+
+                    <div class="action-item col-sm-2 Inline">
+                        <div class="form-group">
+                            <label class="control-label">Weight</label>
+                            <div style="display: flex;">
+                                <input type="number" class="form-control WeightInput" style="flex: 1;" />
+                                <span style="flex: 1;">&nbsp Lbs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    @* <div class="action-item col-sm-2 target">
+    <div class="form-group">
+    <label asp-for="Completed" class="control-label">Completed?</label>
+    <input asp-for="Completed" class="form-check-input" />
+    </div>
+    </div> *@
 
     <div class="action-item col-sm-4 target">
         <div class="form-group">
-            <label asp-for="Completed" class="control-label">Completed?</label>
-            <input asp-for="Completed" class="form-check-input" />
+            <br />
+            <button type="button" class="btn btn-success col-sm-5 CustomizeSetsButton">Customize Sets</button>
+            <button type="button" class="deleteExercise btn btn-danger col-sm-5">Delete Exercise</button>
         </div>
     </div>
 
     @* hidden model properties *@
     <input asp-for="Order" class="OrderInput" hidden />
 
-    <button type="button" class="deleteExercise btn btn-danger col-sm-2">Delete Exercise</button>
-    @* <button type="button" class="AutoFill btn btn-danger col-sm-2">Auto Fill</button> *@
 </div>
 
 
 <script>
 
-    
+
     $(document).ready(function () {
         //FillAutoCompleteBox("bench press");
     });
@@ -50,7 +120,7 @@
     //     alert(value);
     //     $.ajax({
     //         type: "POST",
-    //         url: 
+    //         url:
     //         contentType: "application/json; charset=utf-8",
     //         dataType: "html",
     //         success: function (result, status, xhr) {
@@ -80,11 +150,21 @@
                 if (result != "") {
                     element.html(result);
                     element.show();
+
+                    //hides selectlist if user tabs away from it
+                    $(".ExerciseNameSelectList").on("blur", function () {
+                        var str = $(this).find(".ExerciseNameSelectList").find(":selected").text();
+                        $(this).parent().find(".ExerciseName").val(str);
+                        $(this).hide();
+                    });
                 }
                 else {
                     //alert("No results");
                     //element.html("");
                     element.hide();
+
+                    //delete current select list
+                    //element.find(".ExerciseNameSelectList").remove();
                 }
             },
             error: function (xhr, status, error) {
@@ -92,30 +172,22 @@
             }
         });
     }
-    
-    //$("#exerciseNameInput_" + Model.Order).keyup(function (e) {
+
     $('.ExerciseName').keyup(function (e) {
-        //var inputField = 
-        //var selectDiv = $(this).parent().find(".AutoCompleteDiv");
         var selectList = $(this).parent().find(".ExerciseNameSelectList");
         if (e.which == 40) {
-            //alert('name');
-            //$(selectID).val($(selectID + " option:first").val());
-            //$(selectID).focus();
-            //$(this).val($(selectID + " :selected").text());
-            //selectDiv.val(selectDiv.find("option:first").val());
+            if (selectList.is(":hidden")) {
+                return;
+            }
             selectList.val(selectList.prop("selectedIndex", 0).val());
             selectList.focus();
             $(this).val(selectList.find(":selected").text());
         }
         else {
-            //alert('else');
             if ($(this).val().length > 2) {
-                //alert('name');
                 FillAutoCompleteBox($(this).parent().find(".AutoCompleteDiv"), $(this).val(), @Model.Order);
             }
             else {
-                //alert('hide');
                 $(this).parent().find(".AutoCompleteDiv").hide();
             }
         }
@@ -123,21 +195,39 @@
 
     //if an option on a selectlist is selected then the name field will be updated to match it
     $(".AutoCompleteDiv").on("change", function () {
-        var str = "";
-        $(this).find(".ExerciseNameSelectList").find(":selected").each(function () {
-            str += $(this).text() + " ";
-        });
+        var str = $(this).find(".ExerciseNameSelectList").find(":selected").text();
         $(this).parent().find(".ExerciseName").val(str);
     });
 
+    //hides selectlist if user tabs away from name field
+    $(".ExerciseName").on("blur", function () {
+    });
+
+    // //hides selectlist if it loses focus
+    // $(".AutoCompleteDiv").on("blur", function () {
+    //     alert('blur');
+    //     var str = $(this).find(".ExerciseNameSelectList").find(":selected").text();
+    //     $(this).parent().find(".ExerciseName").val(str);
+    //     $(this).hide();
+    // });
+
+    //hides selectlist is the user presses enter while an option is highlighted
+    $(".AutoCompleteDiv").on("keyup", function (e) {
+        if (e.keyCode == 13) {
+            var str = $(this).find(".ExerciseNameSelectList").find(":selected").text();
+            $(this).parent().find(".ExerciseName").val(str);
+            $(this).hide();
+        }
+    });
+
     //$(".ExerciseNameSelectList").on("change", function () {
-        //alert("change");
-        // var str = "";
-        // $(this).find(":selected").each(function () {
-        //     str += $(this).text() + " ";
-        // });
-        // alert(str);
-        // $(this).parent().parent().find(".ExerciseName").text(str);
+    //alert("change");
+    // var str = "";
+    // $(this).find(":selected").each(function () {
+    //     str += $(this).text() + " ";
+    // });
+    // alert(str);
+    // $(this).parent().parent().find(".ExerciseName").text(str);
     //});
 
     // $(".AutoCompleteDiv").on("change", find(".ExerciseNameSelectList"), function () {
@@ -148,6 +238,74 @@
     $(document).click(function (e) {
         $(".AutoCompleteDiv").hide();
     });
+
+    //show or hide custom sets if user presses button
+    $(".CustomizeSetsButton").click(function (e) {
+
+        var numSets = $(this).parent().parent().parent().find(".NumSetsInput").val();
+        var rowElement = $(this).parent().parent().parent().find(".CustomRowSets");
+
+        if (rowElement.is(":hidden")) {
+            var startingReps = $(this).parent().parent().parent().find(".MasterRepsInput").val();
+            var startingWeight = $(this).parent().parent().parent().find(".MasterWeightInput").val();
+            rowElement.show();
+
+            //show customizable sets
+            for (var i = 0; i < numSets; i++) {
+                var setID = ".CustomSet_" + i;
+
+                //when revealing, set the default reps and weight
+                rowElement.find(setID).find(".RepsInput").val(startingReps);
+                rowElement.find(setID).find(".WeightInput").val(startingWeight);
+                rowElement.find(setID).show();
+
+                //disable overall reps and weight inputs
+                $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', true);
+                $(this).parent().parent().parent().find(".MasterWeightInput").prop('disabled', true);
+            }
+            //change text on button
+            $(this).html("Hide Sets");
+        }
+        else {
+            //hide all custom set elements
+            rowElement.hide();
+            var customRowEelements = $(this).parent().parent().parent().find(".CustomSetRow");
+            customRowEelements.hide();
+
+            //clear hidden inputs
+            $(this).parent().parent().parent().find(".RepsInput").val("");
+            $(this).parent().parent().parent().find(".WeightInput").val("");
+
+            //change text on button
+            $(this).html("Customize Sets");
+
+            //re-enable overall reps and weight inputs
+            $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', false);
+            $(this).parent().parent().parent().find(".MasterWeightInput").prop('disabled', false);
+        }
+    });
+
+    //change number of custom set rows that are showing if the user changes the total number of sets
+    $(".NumSetsInput").on("change", function () {
+
+        var rowElement = $(this).parent().parent().parent().parent().find(".CustomRowSets");
+        if (rowElement.is(":hidden")) {
+            return;
+        }
+        else {
+            //hide all custom set rows
+            var customRowEelements = $(this).parent().parent().parent().parent().find(".CustomSetRow");
+            customRowEelements.hide();
+
+            //show the right number of set rows
+            var numSets = $(this).val();
+            for (var i = 0; i < numSets; i++) {
+                var setName = ".CustomSet_" + i;
+                rowElement.find(setName).show();
+            }
+        }
+    });
+
 
 </script>
 
