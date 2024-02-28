@@ -20,41 +20,103 @@
         <div id="exercisesSection">
             <h3 id="exercisesLabel">Exercises</h3>
             @{
-                // for(int i = 0; i < model.exercisemodels.count; i++)
-                // {
-                //     var exercise = model.exercisemodels[i].exercise;
-                //     var hiddendivstyling = "";
-                //     if(model.exercisemodels[i].deleted)
-                //     {
-                //         <partial name="_newexercise.cshtml" for="exercisemodels[i]" />
-                //         //hiddendivstyling = "display:none;";
-                //     }
-                //     // <div id="exercisediv_@model.exercisemodels[i]" style="@hiddendivstyling">
+                var hiddenDivStyling = "";
+                for(int i = 0; i < Model.ExerciseModels.Count; i++)
+                {
+                    if(i != 0)
+                    {
+                        hiddenDivStyling = "HideOnLoad";
+                    }
+                    <div id="exerciseDiv_@i" class="row ExerciseDiv @hiddenDivStyling">
+                        <br />
 
-                //     //     <div class="form-group">
-                //     //         <label asp-for="exercisemodels[i].exerciselist" class="control-label">exercise name</label>
-                //     //         <select asp-items="model.exercisemodels[i].exerciselist" asp-for="exercisemodels[i].selectedexercise" class="form-select" ></select>
-                //     //         <span id="nonameerror" class="text-danger" style="display:none;">workout name is required.</span>
-                //     //     </div>
-                //     //     <div class="form-group">
-                //     //         <label asp-for="exercisemodels[i].exercise.numsets" class="control-label">number of sets</label>
-                //     //         <input asp-for="exercisemodels[i].exercise.numsets" type="number" class="form-control" />
-                //     //         <span id="nonameerror" class="text-danger" style="display:none;">workout name is required.</span>
-                //     //     </div>
-                //     //     <div class="form-group">
-                //     //         <label asp-for="exercisemodels[i].exercise.completed" class="control-label">completed?</label>
-                //     //         <input asp-for="exercisemodels[i].exercise.completed" class="form-check-input" />
-                //     //     </div>
+                        <div class="row NewExerciseInputs">
+                            <div class="action-item col-sm-4 target">
+                                <div class="form-group">
+                                    <label class="control-label">Exercise Name</label>
+                                    <input asp-for="ExerciseModels[i].Exercise.ExerciseType.Name" type="search" class="form-control ExerciseName" autocomplete="off" />
+                                    <div class="AutoCompleteDiv"></div>
+                                </div>
+                            </div>
 
-                //     //     <button type="button" class="deleteexercisebutton btn btn-danger col-sm-2">delete exercise</button>
+                            <div class="action-item col-sm-2 target">
+                                <div class="form-group">
+                                    <label asp-for="ExerciseModels[i].Exercise.NumSets" class="control-label">Number of sets</label>
+                                    <select asp-for="ExerciseModels[i].Exercise.NumSets" class="form-select NumSetsInput" aria-label="Default select">
+                                        <option selected value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                //     //     <div>
-                //     //         <input class="deletedexercise" asp-for="exercisemodels[i].deleted" hidden/>
-                //     //         <input class="" asp-for="exercisemodels[i].exerciselist" hidden />
-                //     //     </div>
-                //     // </div>
-                    
-                // }
+                            <div class="action-item col-sm-2 target">
+                                <div class="form-group">
+                                    <label asp-for="ExerciseModels[i].MasterReps" class="control-label">Number of reps</label>
+                                    <input asp-for="ExerciseModels[i].MasterReps" type="number" class="form-control MasterRepsInput" />
+                                </div>
+                            </div>
+
+                            <div class="action-item col-sm-2 target">
+                                <div class="form-group">
+                                    <label asp-for="ExerciseModels[i].MasterWeight" class="control-label">Weight</label>
+                                    <div style="display: flex;">
+                                        <input asp-for="ExerciseModels[i].MasterWeight" type="number" class="form-control MasterWeightInput" style="flex: 1;" />
+                                        <span style="flex: 1;">&nbsp Lbs</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row CustomRowSets HideOnLoad">
+                            @{
+                                for (int j = 0; j < 9; j++)
+                                {
+                                    int setNumber = j + 1;
+                                    <div class="CustomSetRow CustomSet_@j HideOnLoad">
+                                        <span class="SetNumberSpan">Set @setNumber</span>
+                                        <div class="action-item col-sm-2 Inline">
+                                            <div class="form-group">
+                                                <label asp-for="ExerciseModels[i].SetsList[j].Reps" class="control-label">Number of reps</label>
+                                                <input asp-for="ExerciseModels[i].SetsList[j].Reps" type="number" class="form-control RepsInput" />
+                                            </div>
+                                        </div>
+
+                                        <div class="action-item col-sm-2 Inline">
+                                            <div class="form-group">
+                                                <label asp-for="ExerciseModels[i].SetsList[j].Weight" class="control-label">Weight</label>
+                                                <div style="display: flex;">
+                                                    <input asp-for="ExerciseModels[i].SetsList[j].Weight" type="number" class="form-control WeightInput" style="flex: 1;" />
+                                                    <span style="flex: 1;">&nbsp Lbs</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <div class="action-item col-sm-4 target">
+                            <div class="form-group">
+                                <br />
+                                <button type="button" id="CustomizeSetsButton_@Model.ExerciseModels[i].Order" class="btn btn-success col-sm-5 CustomizeSetsButton">Customize Sets</button>
+                                <button type="button" class="deleteExercise btn btn-danger col-sm-5">Delete Exercise</button>
+                            </div>
+                        </div>
+
+                        @* hidden model properties *@
+                        <input asp-for="ExerciseModels[i].Order" class="OrderInput" hidden />
+                        <input class="CustomSets" value="false" hidden />
+
+                    </div>
+                }
 
                 // <partial name="_NewExercise.cshtml" for="NewExercise" />
             }
@@ -78,7 +140,7 @@
 </div>
 
 
-@* <button type="button" onclick="getExercises()">Names</button> *@
+<button type="button" onclick="getExercises()">Names</button>
 
 @section Scripts {
     <script>
@@ -91,7 +153,7 @@
             });
 
             //creates first exercise
-            $('#addExercise').click();
+            //$('#addExercise').click();
 
         //     //assign delete logic to exercises
         //     $('.DeleteExerciseButton').click(function () {
@@ -101,6 +163,159 @@
         //     });
 
         });
+
+        ////////////////////////////
+        // autocomplete box logic //
+        ////////////////////////////
+
+        function FillAutoCompleteBox(element, value, orderNum) {
+            $.ajax({
+                type: "POST",
+                data: { input: value, order: orderNum },
+                url: '/Workout/FillAutoCompleteExercises',
+                success: function (result, status, xhr) {
+                    if (result != "") {
+                        element.html(result);
+                        element.show();
+
+                        //hides selectlist if user tabs away from it
+                        $(".ExerciseNameSelectList").on("blur", function () {
+                            var str = $(this).find(".ExerciseNameSelectList").find(":selected").text();
+                            $(this).parent().find(".ExerciseName").val(str);
+                            $(this).hide();
+                        });
+                    }
+                    else {
+                        element.hide();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr + " " + status + " " + error);
+                }
+            });
+        }
+
+        $('.ExerciseName').keyup(function (e) {
+            var selectList = $(this).parent().find(".ExerciseNameSelectList");
+            if (e.which == 40) {
+                if (selectList.is(":hidden")) {
+                    return;
+                }
+                selectList.val(selectList.prop("selectedIndex", 0).val());
+                selectList.focus();
+                $(this).val(selectList.find(":selected").text());
+            }
+            else {
+                if ($(this).val().length > 2) {
+                    FillAutoCompleteBox($(this).parent().find(".AutoCompleteDiv"), $(this).val());
+                }
+                else {
+                    $(this).parent().find(".AutoCompleteDiv").hide();
+                }
+            }
+        });
+
+        //if an option on a selectlist is selected then the name field will be updated to match it
+        $(".AutoCompleteDiv").on("change", function () {
+            var str = $(this).find(".ExerciseNameSelectList").find(":selected").text();
+            $(this).parent().find(".ExerciseName").val(str);
+        });
+
+        //hides selectlist if user tabs away from name field
+        $(".ExerciseName").on("blur", function () {
+        });
+
+        //hides selectlist is the user presses enter while an option is highlighted
+        $(".AutoCompleteDiv").on("keyup", function (e) {
+            if (e.keyCode == 13) {
+                var str = $(this).find(".ExerciseNameSelectList").find(":selected").text();
+                $(this).parent().find(".ExerciseName").val(str);
+                $(this).hide();
+            }
+        });
+
+        //hide dropdown if user clicks elsewhere
+        $(document).click(function (e) {
+            $(".AutoCompleteDiv").hide();
+        });
+
+
+        ///////////////////////
+        // custom sets logic //
+        ///////////////////////
+
+        //show or hide custom sets if user presses button
+        $(".CustomizeSetsButton").click(function (e) {
+            var numSets = $(this).parent().parent().parent().find(".NumSetsInput").val();
+            var rowElement = $(this).parent().parent().parent().find(".CustomRowSets");
+
+            if (rowElement.is(":hidden")) {
+                var startingReps = $(this).parent().parent().parent().find(".MasterRepsInput").val();
+                var startingWeight = $(this).parent().parent().parent().find(".MasterWeightInput").val();
+                rowElement.show();
+
+                //show customizable sets
+                for (var i = 0; i < numSets; i++) {
+                    var setID = ".CustomSet_" + i;
+
+                    //when revealing, set the default reps and weight
+                    rowElement.find(setID).find(".RepsInput").val(startingReps);
+                    rowElement.find(setID).find(".WeightInput").val(startingWeight);
+                    rowElement.find(setID).show();
+
+                    //disable overall reps and weight inputs
+                    $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', true);
+                    $(this).parent().parent().parent().find(".MasterWeightInput").prop('disabled', true);
+                }
+                //change text on button and set customSets variable
+                $(this).html("Hide Sets");
+                $(this).parent().parent().parent().find(".CustomSets").val("true");
+            }
+            else {
+                //hide all custom set elements
+                rowElement.hide();
+                var customRowEelements = $(this).parent().parent().parent().find(".CustomSetRow");
+                customRowEelements.hide();
+
+                //clear hidden inputs
+                $(this).parent().parent().parent().find(".RepsInput").val("");
+                $(this).parent().parent().parent().find(".WeightInput").val("");
+
+                //change text on button and set customSets variable
+                $(this).html("Customize Sets");
+                $(this).parent().parent().parent().find(".CustomSets").val("false");
+
+                //re-enable overall reps and weight inputs
+                $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', false);
+                $(this).parent().parent().parent().find(".MasterWeightInput").prop('disabled', false);
+            }
+        });
+
+        //change number of custom set rows that are showing if the user changes the total number of sets
+        $(".NumSetsInput").on("change", function () {
+
+            var rowElement = $(this).parent().parent().parent().parent().find(".CustomRowSets");
+            if (rowElement.is(":hidden")) {
+                return;
+            }
+            else {
+                //hide all custom set rows
+                var customRowEelements = $(this).parent().parent().parent().parent().find(".CustomSetRow");
+                customRowEelements.hide();
+
+                //show the right number of set rows
+                var numSets = $(this).val();
+                for (var i = 0; i < numSets; i++) {
+                    var setName = ".CustomSet_" + i;
+                    rowElement.find(setName).show();
+                }
+            }
+        });
+
+
+        ///////////////////////////
+        // form validation logic //
+        ///////////////////////////
 
         var valid = false;
         var doubleSubmit = false;
@@ -148,50 +363,76 @@
             $("#submitForm").click();
         }
         
-        var exerciseCount = 0;
-        $('#addExercise').click(function () {
-            $.ajax({
-                url: '/Workout/NewExercisePartial',
-                data: {orderNum:exerciseCount},
-                success: function (partialView) {
-                    $('#exercisesSection').append(partialView);
-                    exerciseCount++;
+        // var exerciseCount = 0;
+        // $('#addExercise').click(function () {
+        //     $.ajax({
+        //         url: '/Workout/NewExercisePartial',
+        //         data: {orderNum:exerciseCount},
+        //         success: function (partialView) {
+        //             $('#exercisesSection').append(partialView);
+        //             exerciseCount++;
 
-                    //assign delete logic to new exercise
-                    $('.deleteExercise').click(function () {
-                        $(this).parent().parent().parent().remove();
-                    });
-                }
-            });
-        });
+        //             //assign delete logic to new exercise
+        //             $('.deleteExercise').click(function () {
+        //                 $(this).parent().parent().parent().remove();
+        //             });
+        //         }
+        //     });
+        // });
 
-        function getExercises() {
-            //alert('hi');
-            //var exercises = [];
+        // function getExercises() {
+        //     alert('hi');
+        //     var exercises = [];
 
-            const ExerciseNames = $('.ExerciseName').get().map(function (name) {
-                return name.value;
-            });
-            // var ExerciseNames = $('.ExerciseName');
-            //alert(ExerciseNames.length);
-            // for (var i = 0; i < ExerciseNames.length; i++) {
-            //     alert(ExerciseNames[i]);
-            // }
+        //     const ExerciseNames = $('.ExerciseName').get().map(function (name) {
+        //         return name.value;
+        //     });
+        //     var ExerciseNames = $('.ExerciseName');
+        //     alert(ExerciseNames.length);
+        //     for (var i = 0; i < ExerciseNames.length; i++) {
+        //         alert(ExerciseNames[i]);
+        //     }
 
-            $.ajax({
-                type: 'POST',
-                data: { strings: ExerciseNames },
-                url: '/Workout/PartialTest',
-                success: function (e) {
-                    alert("success");
-                }
-            });
-        }
-
-        // function TriggerAutoComplete() {
-        //     FillAutoCompleteBox('squat');
+        //     $.ajax({
+        //         type: 'POST',
+        //         data: { strings: ExerciseNames },
+        //         url: '/Workout/PartialTest',
+        //         success: function (e) {
+        //             alert("success");
+        //         }
+        //     });
         // }
 
+        //use this one
+        // function getExercises() {
+        //     var exercises = [];
+        //     var exerciseDivs = $('.ExerciseDiv');
+
+        //     //iterate through exercises and add their info to the dataset
+        //     exerciseDivs.each(function () {
+
+        //         //find exercise info
+        //         var name = $(this).find(".ExerciseName").val();
+        //         var setsNum = $(this).find(".NumSetsInput").val();
+        //         var repsNum = $(this).find(".MasterRepsInput").val();
+        //         var weightNum = $(this).find(".MasterWeightInput").val();
+        //         alert(name + " " + setsNum + " " + repsNum + " " + weightNum);
+
+        //         //find exercise info if user customized sets
+
+        //         //load info into dataset
+        //         exercises.push({
+        //             Name: name,
+        //             SetsNum: setsNum,
+        //             RepsNum: repsNum,
+        //             WeightNum: weightNum
+        //         });
+        //     })
+            
+        //     for (var i = 0; i < ExerciseNames.length; i++) {
+        //         alert(ExerciseNames[i].val())
+        //     }
+        // }
         
 
     </script>
