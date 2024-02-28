@@ -13,11 +13,13 @@ namespace Workout_Builder.Controllers
     {
         private readonly IWorkoutService _workoutContext;
         private readonly ILogger<WorkoutController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public WorkoutController(IWorkoutService data, ILogger<WorkoutController> logger)
+        public WorkoutController(IWorkoutService context, ILogger<WorkoutController> logger, IConfiguration configuration)
         {
-            _workoutContext = data;
+            _workoutContext = context;
             _logger = logger;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -52,25 +54,31 @@ namespace Workout_Builder.Controllers
 
             //newWorkoutVM.E
 
+            int maxExercises = _configuration.GetValue<int>("MaxNumExercises");
+            int maxSets = _configuration.GetValue<int>("MaxNumSets");
+            var exerciseList = await _workoutContext.GetExerciseSelectList();
+            for (int i = 0; i < maxExercises; i++)
+            {
+                var newModel = new NewExerciseViewModel()
+                {
+                    Deleted = false,
+                    Order = i,
+                    Exercise = new Exercise()
+                    {
+                        NumSets = 1
+                    },
+                    ExerciseList = exerciseList,
+                    MaxNumExercises = maxExercises,
+                    SetsList = new List<Set>(),
+                };
 
-            //newWorkoutVM.ExerciseModels.Add(new NewExerciseViewModel()
-            //{
-            //    Deleted = false,
-            //    Exercise = new Exercise()
-            //    {
-            //        NumSets = 1
-            //    },
-            //    ExerciseList = await _workoutContext.GetExerciseSelectList(),
-            //});
+                for(int j = 0; j < maxSets; j++)
+                {
+                    newModel.SetsList.Add(new Set());
+                }
 
-
-
-            //var testExercise = new Exercise()
-            //{
-            //    Completed = true,
-            //    IsPounds = true,
-            //};
-            //newWorkoutVM.Exercises.Add(testExercise);
+                newWorkoutVM.ExerciseModels.Add(newModel);
+            }
 
             return View(newWorkoutVM);
         }
@@ -150,16 +158,16 @@ namespace Workout_Builder.Controllers
         }
 
         [HttpPost]
-        public async Task<string> FillAutoCompleteExercises(string input, int order)
+        public async Task<string> FillAutoCompleteExercises(string input/*, int order*/)
         {
             var exercises = await _workoutContext.AutofillExerciseTypes(input);
             StringBuilder sb = new StringBuilder();
 
             if(exercises != null && exercises.Count > 0) 
             {
-                sb.Append("<select class=\"ExerciseNameSelectList\" id=\"autoCompleteSelect_" + order + "\" size=\"5\">");
+                sb.Append("<select class=\"ExerciseNameSelectList\" size=\"5\">");
 
-                foreach(var exercise in exercises)
+                foreach (var exercise in exercises)
                 {
                     sb.Append("<option value=\"" + exercise.Id + "\">" + exercise.Name + "</option>");
                 }
