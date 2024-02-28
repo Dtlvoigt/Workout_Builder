@@ -43,6 +43,9 @@ namespace Workout_Builder.Controllers
         [HttpGet]
         public async Task<IActionResult> NewWorkout()
         {
+            int maxExercises = _configuration.GetValue<int>("MaxNumExercises");
+            int maxSets = _configuration.GetValue<int>("MaxNumSets");
+
             var newWorkoutVM = new NewWorkoutVM()
             {
                 Workout = new Workout(),
@@ -51,10 +54,10 @@ namespace Workout_Builder.Controllers
                 NewExercise = new Exercise(),
                 AddExercise = false,
                 NumExercises = 0,
+                MaxNumExercises = maxExercises,
+                MaxNumSets = maxSets,
             };
 
-            int maxExercises = _configuration.GetValue<int>("MaxNumExercises");
-            int maxSets = _configuration.GetValue<int>("MaxNumSets");
             var exerciseList = await _workoutContext.GetExerciseSelectList();
             for (int i = 0; i < maxExercises; i++)
             {
