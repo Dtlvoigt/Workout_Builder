@@ -50,9 +50,8 @@ namespace Workout_Builder.Controllers
                 ExerciseModels = new List<NewExerciseViewModel>(),
                 NewExercise = new Exercise(),
                 AddExercise = false,
+                NumExercises = 0,
             };
-
-            //newWorkoutVM.E
 
             int maxExercises = _configuration.GetValue<int>("MaxNumExercises");
             int maxSets = _configuration.GetValue<int>("MaxNumSets");
