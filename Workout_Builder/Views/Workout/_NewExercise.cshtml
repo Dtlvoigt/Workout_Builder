@@ -1,5 +1,5 @@
-﻿@model Exercise
-@* @model Workout_Builder.ViewModels.NewExerciseViewModel *@
+﻿@* @model Exercise *@
+@model Workout_Builder.ViewModels.NewExerciseViewModel
 
 
 <div class="row ExerciseDiv">
@@ -26,8 +26,8 @@
         </div> *@
         <div class="action-item col-sm-2 target">
             <div class="form-group">
-                <label asp-for="NumSets" class="control-label">Number of sets</label>
-                <select class="form-select NumSetsInput" aria-label="Default select" asp-for="NumSets">
+                <label asp-for="Exercise.NumSets" class="control-label">Number of sets</label>
+                <select class="form-select NumSetsInput" aria-label="Default select" asp-for="Exercise.NumSets">
                     <option selected value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -98,13 +98,14 @@
     <div class="action-item col-sm-4 target">
         <div class="form-group">
             <br />
-            <button type="button" class="btn btn-success col-sm-5 CustomizeSetsButton">Customize Sets</button>
+            <button type="button" id="CustomizeSetsButton_@Model.Order" class="btn btn-success col-sm-5 CustomizeSetsButton">Customize Sets</button>
             <button type="button" class="deleteExercise btn btn-danger col-sm-5">Delete Exercise</button>
         </div>
     </div>
 
     @* hidden model properties *@
     <input asp-for="Order" class="OrderInput" hidden />
+    <input class="CustomSets" value="false" hidden/>
 
 </div>
 
@@ -174,6 +175,7 @@
     }
 
     $('.ExerciseName').keyup(function (e) {
+        alert('hi');
         var selectList = $(this).parent().find(".ExerciseNameSelectList");
         if (e.which == 40) {
             if (selectList.is(":hidden")) {
@@ -241,7 +243,6 @@
 
     //show or hide custom sets if user presses button
     $(".CustomizeSetsButton").click(function (e) {
-
         var numSets = $(this).parent().parent().parent().find(".NumSetsInput").val();
         var rowElement = $(this).parent().parent().parent().find(".CustomRowSets");
 
@@ -263,8 +264,9 @@
                 $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', true);
                 $(this).parent().parent().parent().find(".MasterWeightInput").prop('disabled', true);
             }
-            //change text on button
+            //change text on button and set customSets variable
             $(this).html("Hide Sets");
+            $(this).parent().parent().parent().find(".CustomSets").val("true");
         }
         else {
             //hide all custom set elements
@@ -276,8 +278,9 @@
             $(this).parent().parent().parent().find(".RepsInput").val("");
             $(this).parent().parent().parent().find(".WeightInput").val("");
 
-            //change text on button
+            //change text on button and set customSets variable
             $(this).html("Customize Sets");
+            $(this).parent().parent().parent().find(".CustomSets").val("false");
 
             //re-enable overall reps and weight inputs
             $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', false);
