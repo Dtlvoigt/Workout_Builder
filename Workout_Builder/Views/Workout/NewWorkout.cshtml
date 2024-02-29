@@ -213,7 +213,7 @@
 
             //clear the lowest revealed exercise, then hide it and decrement exercise number tracker
             clearExercise(highestOrder);
-            //$("#exerciseDiv_" + highestOrder).hide();
+            $("#exerciseDiv_" + highestOrder).hide();
             $("#numExercises").val(--highestOrder);
 
             //disable delete button if only one exercise is left
@@ -231,14 +231,26 @@
             exerciseDiv.find($(".MasterWeightInput")).val(0);
             exerciseDiv.find($(".RepsInput")).val(0);
             exerciseDiv.find($(".WeightInput")).val(0);
+
+            //hide all custom set elements
+            exerciseDiv.find($(".CustomRowSets")).hide();
+            exerciseDiv.find(".CustomSetRow").hide();
+
+            //change text on button and set customSets variable
+            exerciseDiv.find($(".CustomizeSetsButton")).html("Customize Sets");
+            exerciseDiv.find(".CustomSets").val("false");
+
+            //re-enable master reps and weight inputs
+            exerciseDiv.find(".MasterRepsInput").prop('disabled', false);
+            exerciseDiv.find(".MasterWeightInput").prop('disabled', false);
         }
 
-        //replace input fields of selected exercise with data of the exercise below it
+        //move all inputs up one exercise
         function moveExerciseUp(orderNum) {
             //alert('moving exercise ' + orderNum + ' up');
         }
 
-        //replace input fields of selected exercise with data of the exercise above it
+        //move all inputs down one exercise
         function moveExerciseDown(orderNum) {
 
         }
@@ -342,7 +354,7 @@
                     rowElement.find(setID).find(".WeightInput").val(startingWeight);
                     rowElement.find(setID).show();
 
-                    //disable overall reps and weight inputs
+                    //disable master reps and weight inputs
                     $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', true);
                     $(this).parent().parent().parent().find(".MasterWeightInput").prop('disabled', true);
                 }
@@ -353,12 +365,12 @@
             else {
                 //hide all custom set elements
                 rowElement.hide();
-                var customRowEelements = $(this).parent().parent().parent().find(".CustomSetRow");
-                customRowEelements.hide();
+                var customRowElements = $(this).parent().parent().parent().find(".CustomSetRow");
+                customRowElements.hide();
 
                 //clear hidden inputs
-                $(this).parent().parent().parent().find(".RepsInput").val("");
-                $(this).parent().parent().parent().find(".WeightInput").val("");
+                $(this).parent().parent().parent().find(".RepsInput").val(0);
+                $(this).parent().parent().parent().find(".WeightInput").val(0);
 
                 //change text on button and set customSets variable
                 $(this).html("Customize Sets");
