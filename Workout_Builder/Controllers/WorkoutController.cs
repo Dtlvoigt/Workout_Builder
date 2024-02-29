@@ -53,7 +53,7 @@ namespace Workout_Builder.Controllers
                 ExerciseModels = new List<NewExerciseViewModel>(),
                 NewExercise = new Exercise(),
                 AddExercise = false,
-                NumExercises = 0,
+                NumExercises = 1,
                 MaxNumExercises = maxExercises,
                 MaxNumSets = maxSets,
             };
