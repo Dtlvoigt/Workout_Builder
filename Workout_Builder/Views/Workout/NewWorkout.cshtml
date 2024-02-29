@@ -196,6 +196,16 @@
 
 
 
+        //reset all inputs for exercise
+        function clearExercise(orderNum) {
+            var exerciseDiv = $("#exerciseDiv_" + orderNum);
+            exerciseDiv.find($(".ExerciseName")).val("");
+            exerciseDiv.find($(".NumSetsInput")).val(1);
+            exerciseDiv.find($(".MasterRepsInput")).val(0);
+            exerciseDiv.find($(".MasterWeightInput")).val(0);
+            exerciseDiv.find($(".RepsInput")).val(0);
+            exerciseDiv.find($(".WeightInput")).val(0);
+        }
         //replace input fields of selected exercise with data of the exercise below it
         function moveExerciseUp(orderNum) {
 
