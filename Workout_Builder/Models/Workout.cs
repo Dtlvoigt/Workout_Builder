@@ -9,6 +9,7 @@ namespace Workout_Builder.Models
         [Key]
         public int Id { get; set; }
         public string? UserId { get; set; }
+        [Required(ErrorMessage = "Workout name is required")]
         public string? Name { get; set; }
         public Boolean IsTemplate { get; set; }
         public DateTime DateCreated { get; set; }

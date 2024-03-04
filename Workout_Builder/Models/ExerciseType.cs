@@ -9,6 +9,7 @@ namespace Workout_Builder.Models
         [Key]
         public int Id { get; set; }
         [JsonPropertyName("name")]
+        //[Required(ErrorMessage = "Exercise name is required")]
         public string? Name { get; set; }
         public string? Description { get; set; }
         [JsonPropertyName("force")]
