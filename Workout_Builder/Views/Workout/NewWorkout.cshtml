@@ -133,6 +133,8 @@
         @* hidden model properties for workout *@
         <div>
             <input id="numExercises" asp-for="NumExercises" hidden />
+            <input id="maxExercises" asp-for="MaxNumExercises" hidden />
+            <input id="maxSets" asp-for="MaxNumSets" hidden />
         </div>
     </form>
 </div>
@@ -500,6 +502,11 @@
 
         //move all inputs down one exercise
         function moveExerciseDown(orderNum) {
+
+        }
+
+        //swaps positions of 2 exercises
+        function swapExercises(order1, order2) {
 
         }
 

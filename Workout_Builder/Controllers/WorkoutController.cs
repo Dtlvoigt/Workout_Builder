@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Diagnostics;
 using System.Security.Claims;
 using System.Text;
@@ -26,7 +27,7 @@ namespace Workout_Builder.Controllers
         public async Task<IActionResult> Index()
         {
             //if the user isn't logged in, show them the login screen
-            if(User.Identity != null && !User.Identity.IsAuthenticated)
+            if (User.Identity != null && !User.Identity.IsAuthenticated)
             {
                 return Redirect("Identity/Account/Login");
             }
@@ -49,10 +50,10 @@ namespace Workout_Builder.Controllers
             var newWorkoutVM = new NewWorkoutVM()
             {
                 Workout = new Workout(),
-                Exercises = new List<Exercise>(),
+                //Exercises = new List<Exercise>(),
                 ExerciseModels = new List<NewExerciseViewModel>(),
-                NewExercise = new Exercise(),
-                AddExercise = false,
+                //NewExercise = new Exercise(),
+                //AddExercise = false,
                 NumExercises = 1,
                 MaxNumExercises = maxExercises,
                 MaxNumSets = maxSets,
@@ -63,7 +64,7 @@ namespace Workout_Builder.Controllers
             {
                 var newModel = new NewExerciseViewModel()
                 {
-                    Deleted = false,
+                    //Deleted = false,
                     Order = i,
                     Exercise = new Exercise()
                     {
@@ -74,7 +75,7 @@ namespace Workout_Builder.Controllers
                     SetsList = new List<Set>(),
                 };
 
-                for(int j = 0; j < maxSets; j++)
+                for (int j = 0; j < maxSets; j++)
                 {
                     newModel.SetsList.Add(new Set());
                 }
@@ -88,44 +89,54 @@ namespace Workout_Builder.Controllers
         [HttpPost]
         public async Task<IActionResult> NewWorkout(NewWorkoutVM newWorkoutVM)
         {
-            //remove deleted exercises
+            if (newWorkoutVM == null || newWorkoutVM.ExerciseModels == null)
+            {
+                throw new Exception("View Model is missing data");
+            }
+
+            //remove unused exercises
+            newWorkoutVM.ExerciseModels.RemoveAll(e => e.Order >= newWorkoutVM.NumExercises);
+            //for (int i = newWorkoutVM.MaxNumExercises; i > newWorkoutVM.NumExercises; i--)
+            //{
+                
+            //    newWorkoutVM.ExerciseModels.RemoveAt(i);
+            //}
             //newWorkoutVM.Exercises.RemoveAll(e => e.NumSets == 0);
 
             //if the user added a new exercise, return the viewmodel
-            if (newWorkoutVM.AddExercise == true)
-            {
-                //foreach (var exercise in  newWorkoutVM.Exercises)
-                //{
-                //    if (exercise.NumSets == 0)
-                //    {
-                //        newWorkoutVM.Exercises.Remove(exercise);
-                //    }
-                //}
+            //if (newWorkoutVM.AddExercise == true)
+            //{
+            //    //foreach (var exercise in  newWorkoutVM.Exercises)
+            //    //{
+            //    //    if (exercise.NumSets == 0)
+            //    //    {
+            //    //        newWorkoutVM.Exercises.Remove(exercise);
+            //    //    }
+            //    //}
 
-                //add new exercise
-                //newWorkoutVM.Exercise.Add(new Exercise()
-                //{
-                //    NumSets = 1,
-                //});
-                //newWorkoutVM.ExerciseModels.ForEach(async e => { e.ExerciseList = await _workoutContext.GetExerciseSelectList(); });
-                foreach(var exerciseModel in newWorkoutVM.ExerciseModels)
-                {
-                    exerciseModel.ExerciseList = await _workoutContext.GetExerciseSelectList().ConfigureAwait(false);
-                }
+            //    //add new exercise
+            //    //newWorkoutVM.Exercise.Add(new Exercise()
+            //    //{
+            //    //    NumSets = 1,
+            //    //});
+            //    //newWorkoutVM.ExerciseModels.ForEach(async e => { e.ExerciseList = await _workoutContext.GetExerciseSelectList(); });
+            //    foreach(var exerciseModel in newWorkoutVM.ExerciseModels)
+            //    {
+            //        exerciseModel.ExerciseList = await _workoutContext.GetExerciseSelectList().ConfigureAwait(false);
+            //    }
 
-                newWorkoutVM.ExerciseModels.Add(new NewExerciseViewModel()
-                {
-                    Deleted = false,
-                    Exercise = new Exercise()
-                    {
-                        NumSets = 1
-                    },
-                    ExerciseList = await _workoutContext.GetExerciseSelectList(),
-                });
+            //    newWorkoutVM.ExerciseModels.Add(new NewExerciseViewModel()
+            //    {
+            //        Deleted = false,
+            //        Exercise = new Exercise()
+            //        {
+            //            NumSets = 1
+            //        },
+            //        ExerciseList = await _workoutContext.GetExerciseSelectList(),
+            //    });
 
-                return View(newWorkoutVM);
-            }
-
+            //    return View(newWorkoutVM);
+            //}
             if (ModelState.IsValid)
             {
                 if (newWorkoutVM.Workout == null)
@@ -133,8 +144,18 @@ namespace Workout_Builder.Controllers
                     throw new Exception("Workout is null");
                 }
 
+                //check if any exercise names are empty
+                for(int i = 0; i <= newWorkoutVM.NumExercises; i++)
+                {
+                    //if (String.IsNullOrEmpty(newWorkoutVM.ExerciseModels[i].Exercise.ExerciseType.Name))
+                    //{
+                    //        ModelState.AddModelError(nameof(newWorkoutVM.ExerciseModels[i].Exercise.ExerciseType.Name), "Exercise name required");
+                    //}
+
+                }
+
                 //remove deleted exercises
-                newWorkoutVM.ExerciseModels.RemoveAll(e => e.Deleted == true);
+                //newWorkoutVM.ExerciseModels.RemoveAll(e => e.Deleted == true);
 
                 //create workout for current user
                 var userID = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("UserId is null");
@@ -165,7 +186,7 @@ namespace Workout_Builder.Controllers
             var exercises = await _workoutContext.AutofillExerciseTypes(input);
             StringBuilder sb = new StringBuilder();
 
-            if(exercises != null && exercises.Count > 0) 
+            if (exercises != null && exercises.Count > 0)
             {
                 sb.Append("<select class=\"ExerciseNameSelectList\" size=\"5\">");
 
