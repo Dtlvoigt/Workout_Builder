@@ -14,6 +14,7 @@
         <div class="form-group">
             <label asp-for="Workout.Name" class="control-label">Workout Name</label>
             <input asp-for="Workout.Name" type="text" class="form-control" />
+            <span asp-validation-for="Workout.Name" class="text-danger"></span>
             <span id="noNameError" class="text-danger" style="display:none;">Workout name is required.</span>
         </div>
 
@@ -34,7 +35,15 @@
                             <div class="action-item col-sm-4 target">
                                 <div class="form-group">
                                     <label class="control-label">Exercise Name</label>
-                                    <input asp-for="ExerciseModels[i].Exercise.ExerciseType.Name" id="exerciseNameInput_@i" type="search" class="form-control ExerciseName" autocomplete="off" />
+                                    @if(Model.ExerciseModels[i].Name == "0")
+                                    {
+                                        <input asp-for="ExerciseModels[i].Name" value="" id="exerciseNameInput_@i" type="search" class="form-control ExerciseName" autocomplete="off" />
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="ExerciseModels[i].Name" id="exerciseNameInput_@i" type="search" class="form-control ExerciseName" autocomplete="off" />
+                                    }
+                                    <span asp-validation-for="ExerciseModels[i].Name" class="text-danger"></span>
                                     <div class="AutoCompleteDiv"></div>
                                 </div>
                             </div>
