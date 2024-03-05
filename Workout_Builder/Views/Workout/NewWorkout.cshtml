@@ -401,6 +401,12 @@
             //alert("validation");
             valid = true;
 
+            //set unused exercise name inputs
+            var numExercises = $("#numExercises").val();
+            for (var i = Number(numExercises); i < @Model.MaxNumExercises; i++) {
+                $("#exerciseNameInput_" + i).val("0");
+            }
+
             //if all fields are ok, submit form to controller
             if (valid && !doubleSubmit) {
                 doubleSubmit = true;
