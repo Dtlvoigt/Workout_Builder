@@ -67,10 +67,11 @@ namespace Workout_Builder.Controllers
                     Name = "",
                     //Deleted = false,
                     Order = i,
-                    Exercise = new Exercise()
-                    {
-                        NumSets = 1
-                    },
+                    //Exercise = new Exercise()
+                    //{
+                    //    NumSets = 1
+                    //},
+                    NumSets = 1,
                     ExerciseList = exerciseList,
                     MaxNumExercises = maxExercises,
                     SetsList = new List<Set>(),
@@ -164,7 +165,9 @@ namespace Workout_Builder.Controllers
 
                 //add workout to database
                 int workoutID = await _workoutContext.AddWorkout(newWorkoutVM.Workout).ConfigureAwait(false);
-                newWorkoutVM.ExerciseModels.ForEach(e => { e.Exercise.Workout.Id = workoutID; });
+                //newWorkoutVM.ExerciseModels.ForEach(e => { e.Exercise.Workout.Id = workoutID; });
+
+                //add exercises to database
 
                 return RedirectToAction("Index");
             }
