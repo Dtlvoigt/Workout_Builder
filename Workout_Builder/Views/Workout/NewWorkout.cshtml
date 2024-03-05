@@ -23,7 +23,7 @@
                 var hiddenDivStyling = "";
                 for (int i = 0; i < Model.ExerciseModels.Count; i++)
                 {
-                    if (i != 0)
+                    if (i >= Model.NumExercises)
                     {
                         hiddenDivStyling = "HideOnLoad";
                     }
@@ -34,7 +34,7 @@
                             <div class="action-item col-sm-4 target">
                                 <div class="form-group">
                                     <label class="control-label">Exercise Name</label>
-                                    <input asp-for="ExerciseModels[i].Exercise.ExerciseType.Name" type="search" class="form-control ExerciseName" autocomplete="off" />
+                                    <input asp-for="ExerciseModels[i].Exercise.ExerciseType.Name" id="exerciseNameInput_@i" type="search" class="form-control ExerciseName" autocomplete="off" />
                                     <div class="AutoCompleteDiv"></div>
                                 </div>
                             </div>
@@ -422,15 +422,15 @@
         }
 
         function SubmitToController() {
-            $('#addExerciseInput').prop('checked', false);
+            //$('#addExerciseInput').prop('checked', false);
             $("#submitForm").click();
         }
 
         //set the bool AddExercise so that the controller knows to add the new exercise to the model
-        function AddNewExerciseSubmit() {
-            $('#addExerciseInput').prop('checked', true);
-            $("#submitForm").click();
-        }
+        // function AddNewExerciseSubmit() {
+        //     $('#addExerciseInput').prop('checked', true);
+        //     $("#submitForm").click();
+        // }
 
 
         //////////////////////
