@@ -6,7 +6,7 @@ namespace Workout_Builder.ViewModels
 {
     public class NewExerciseViewModel
     {
-        public Exercise Exercise { get; set; }
+        //public Exercise Exercise { get; set; }
         [Required(ErrorMessage = "Exercise name is required")]
         public string Name { get; set; }
         public List<SelectListItem>? ExerciseList { get; set; }
