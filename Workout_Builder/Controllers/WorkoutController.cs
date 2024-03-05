@@ -64,6 +64,7 @@ namespace Workout_Builder.Controllers
             {
                 var newModel = new NewExerciseViewModel()
                 {
+                    Name = "",
                     //Deleted = false,
                     Order = i,
                     Exercise = new Exercise()
@@ -95,7 +96,7 @@ namespace Workout_Builder.Controllers
             }
 
             //remove unused exercises
-            newWorkoutVM.ExerciseModels.RemoveAll(e => e.Order >= newWorkoutVM.NumExercises);
+            //newWorkoutVM.ExerciseModels.RemoveAll(e => e.Order >= newWorkoutVM.NumExercises);
             //for (int i = newWorkoutVM.MaxNumExercises; i > newWorkoutVM.NumExercises; i--)
             //{
                 
@@ -167,6 +168,21 @@ namespace Workout_Builder.Controllers
 
                 return RedirectToAction("Index");
             }
+
+            //remove placeholder names on exercises
+            //newWorkoutVM.ExerciseModels.Select(e => e.Exercise.ExerciseType.Name).
+            //                           .Where(n => n == "0").ToList()
+            //                           .ForEach(n => n = "");
+
+            //newWorkoutVM.ExerciseModels.Find(e => e.Exercise.ExerciseType.Name == "0").Exercise.ExerciseType.Name = "";
+            //foreach(var exerciseModel in newWorkoutVM.ExerciseModels)
+            //{
+            //    if(exerciseModel.Exercise.ExerciseType.Name == "0")
+            //    {
+            //        exerciseModel.Exercise.ExerciseType.Name = "";
+            //    }
+            //}
+            //ModelState.
 
             return View(newWorkoutVM);
         }
