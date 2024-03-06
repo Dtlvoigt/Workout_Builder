@@ -168,6 +168,26 @@ namespace Workout_Builder.Controllers
                 //newWorkoutVM.ExerciseModels.ForEach(e => { e.Exercise.Workout.Id = workoutID; });
 
                 //add exercises to database
+                for (int i = 0; i < newWorkoutVM.NumExercises; i++)
+                {
+                    var model = newWorkoutVM.ExerciseModels[i];
+                    var exerciseType = await _workoutContext.GetExerciseByName(model.Name);
+                    string customType = "";
+                    if(exerciseType == null)
+                    {
+                        customType = exerciseType.Name;
+                    }
+
+                    var newExercise = new Exercise()
+                    {
+                        Workout = newWorkoutVM.Workout,
+                        Order = model.Order,
+                        NumSets = model.NumSets,
+                        ExerciseType = exerciseType,
+                        CustomExercise = customType,
+
+                    };
+                }
 
                 return RedirectToAction("Index");
             }
