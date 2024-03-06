@@ -123,7 +123,7 @@
 
                         @* hidden model properties for this exercise *@
                         <input asp-for="ExerciseModels[i].Order" class="OrderInput" hidden />
-                        <input class="CustomSets" value="false" hidden />
+                        <input asp-for="ExerciseModels[i].CustomSets" class="CustomSetsInput" hidden />
                     </div>
                 }
             } @* end of for loop *@
@@ -343,7 +343,7 @@
                 }
                 //change text on button and set customSets variable
                 $(this).html("Hide Sets");
-                $(this).parent().parent().parent().find(".CustomSets").val("true");
+                $(this).parent().parent().parent().find(".CustomSetsInput").prop('checked', true);
             }
             else {
                 //hide all custom set elements
@@ -357,7 +357,7 @@
 
                 //change text on button and set customSets variable
                 $(this).html("Customize Sets");
-                $(this).parent().parent().parent().find(".CustomSets").val("false");
+                $(this).parent().parent().parent().find(".CustomSetsInput").prop('checked', false);
 
                 //re-enable overall reps and weight inputs
                 $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', false);
