@@ -17,6 +17,7 @@ namespace Workout_Builder.Services
         //non specific workout info
         Task<List<ExerciseType>> AutofillExerciseTypes(string input);
         Task<List<SelectListItem>> GetExerciseSelectList();
+        Task<ExerciseType> GetExerciseByName(string name);
 
         //user info
 

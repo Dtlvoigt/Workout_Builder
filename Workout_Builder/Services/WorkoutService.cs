@@ -22,30 +22,6 @@ namespace Workout_Builder.Services
             _dbContext = workoutContext;
         }
 
-        public void AddExercise(Exercise exercise)
-        {
-            //using (var context = _dbContext.CreateDbContext())
-            //{
-            //    context.Exercises.Add(exercise);
-            //    context.SaveChanges();
-            //}
-        }
-
-        public void UpdateExercise(Exercise exercise)
-        {
-            //if (exercise == null)
-            //{
-            //    throw new Exception("Exercise " + exercise.Id + " not found.");
-            //}
-            //else
-            //{
-            //    using (var context = _dbContext.CreateDbContext())
-            //    {
-            //        context.Update(exercise);
-            //        context.SaveChanges();
-            //    }
-            //}
-        }
 
         /////////////////////
         // search workouts //
@@ -67,6 +43,15 @@ namespace Workout_Builder.Services
         ///////////////////////
         // updating workouts //
         ///////////////////////
+
+        public void AddExercise(Exercise exercise)
+        {
+            //using (var context = _dbContext.CreateDbContext())
+            //{
+            //    context.Exercises.Add(exercise);
+            //    context.SaveChanges();
+            //}
+        }
 
         public async Task<int> AddWorkout(Workout workout)
         {
@@ -104,13 +89,29 @@ namespace Workout_Builder.Services
             await _dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
+        public void UpdateExercise(Exercise exercise)
+        {
+            //if (exercise == null)
+            //{
+            //    throw new Exception("Exercise " + exercise.Id + " not found.");
+            //}
+            //else
+            //{
+            //    using (var context = _dbContext.CreateDbContext())
+            //    {
+            //        context.Update(exercise);
+            //        context.SaveChanges();
+            //    }
+            //}
+        }
+
         ///////////////////////////////
         // non specific workout info //
         ///////////////////////////////
-        public ExerciseType GetExerciseByName(string name)
+        public async Task<ExerciseType> GetExerciseByName(string name)
         {
-            var exerciseType = _dbContext.ExerciseTypes.FirstOrDefault(x => x.Name == name) 
-                ?? throw new Exception("Exercise " + name + " not found.");
+            var exerciseType = await _dbContext.ExerciseTypes.FirstOrDefaultAsync(x => x.Name == name).ConfigureAwait(false);
+                //?? throw new Exception("Exercise " + name + " not found.");
             return exerciseType;
         }
 
