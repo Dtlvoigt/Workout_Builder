@@ -44,13 +44,12 @@ namespace Workout_Builder.Services
         // updating workouts //
         ///////////////////////
 
-        public void AddExercise(Exercise exercise)
+        public async Task<int> AddExercise(Exercise exercise)
         {
-            //using (var context = _dbContext.CreateDbContext())
-            //{
-            //    context.Exercises.Add(exercise);
-            //    context.SaveChanges();
-            //}
+            await _dbContext.Exercises.AddAsync(exercise).ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+
+            return exercise.Id;
         }
 
         public async Task<int> AddWorkout(Workout workout)
@@ -170,6 +169,12 @@ namespace Workout_Builder.Services
         }
 
 
+
+        public string CreateSetJsonString(List<Set> sets)
+        {
+            var jsonString = JsonSerializer.Serialize(sets);
+            return jsonString;
+        }
 
     }
 }

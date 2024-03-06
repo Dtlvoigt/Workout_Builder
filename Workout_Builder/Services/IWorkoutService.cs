@@ -11,6 +11,7 @@ namespace Workout_Builder.Services
 
 
         //updating workouts
+        Task<int> AddExercise(Exercise exercise);
         Task<int> AddWorkout(Workout workout);
         Task AddExerciseTypes(List<ExerciseType> exerciseTypes);
 
@@ -23,5 +24,7 @@ namespace Workout_Builder.Services
 
         //file loading
         Task LoadExerciseTypes();
+
+        string CreateSetJsonString(List<Set> sets);
     }
 }
