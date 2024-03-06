@@ -65,16 +65,12 @@ namespace Workout_Builder.Controllers
                 var newModel = new NewExerciseViewModel()
                 {
                     Name = "",
-                    //Deleted = false,
                     Order = i,
-                    //Exercise = new Exercise()
-                    //{
-                    //    NumSets = 1
-                    //},
                     NumSets = 1,
                     ExerciseList = exerciseList,
                     MaxNumExercises = maxExercises,
                     SetsList = new List<Set>(),
+                    CustomSets = false,
                 };
 
                 for (int j = 0; j < maxSets; j++)
@@ -170,23 +166,40 @@ namespace Workout_Builder.Controllers
                 //add exercises to database
                 for (int i = 0; i < newWorkoutVM.NumExercises; i++)
                 {
+                    //obtain necessary information
                     var model = newWorkoutVM.ExerciseModels[i];
                     var exerciseType = await _workoutContext.GetExerciseByName(model.Name);
+
+                    //use custom name field if the entered exercise doesn't match any in the db
                     string customType = "";
                     if(exerciseType == null)
                     {
-                        customType = exerciseType.Name;
+                        customType = model.Name;
                     }
 
+                    //create json string that records individual sets info
+                    string setsJsonString = "";
+                    if(model.CustomSets)
+                    {
+                        setsJsonString = _workoutContext.CreateSetJsonString(model.SetsList);
+                    }
+
+                    //build new exercise
                     var newExercise = new Exercise()
                     {
                         Workout = newWorkoutVM.Workout,
                         Order = model.Order,
                         NumSets = model.NumSets,
+                        MasterReps = model.MasterReps,
+                        MasterWeight = model.MasterWeight,
                         ExerciseType = exerciseType,
-                        CustomExercise = customType,
-
+                        CustomExerciseName = customType,
+                        IsPounds = newWorkoutVM.IsPounds,
+                        CustomSets = model.CustomSets,
+                        SetsJsonString = setsJsonString,
                     };
+
+                    int exerciseID = await _workoutContext.AddExercise(newExercise);
                 }
 
                 return RedirectToAction("Index");
