@@ -1,0 +1,142 @@
+﻿@model Workout_Builder.ViewModels.NewWorkoutVM
+
+<div>
+    <form method="post" id="addForm" enctype="multipart/form-data" onsubmit="return clientValidation()">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Workout.Name" class="control-label">Workout Name</label>
+            <input asp-for="Workout.Name" type="text" class="form-control" />
+            <span asp-validation-for="Workout.Name" class="text-danger"></span>
+            <span id="noNameError" class="text-danger" style="display:none;">Workout name is required.</span>
+        </div>
+
+        <div id="exercisesSection">
+            <h3 id="exercisesLabel">Exercises</h3>
+            @{
+                var hiddenDivStyling = "";
+                for (int i = 0; i < Model.ExerciseModels.Count; i++)
+                {
+                    if (i >= Model.NumExercises)
+                    {
+                        hiddenDivStyling = "HideOnLoad";
+                    }
+                    <div id="exerciseDiv_@i" class="row ExerciseDiv @hiddenDivStyling">
+                        <br />
+
+                        <div class="row NewExerciseInputs">
+                            <div class="action-item col-sm-4 target">
+                                <div class="form-group">
+                                    <label class="control-label">Exercise Name</label>
+                                    @if (Model.ExerciseModels[i].Name == "0")
+                                    {
+                                        <input asp-for="ExerciseModels[i].Name" value="" id="exerciseNameInput_@i" type="search" class="form-control ExerciseName" autocomplete="off" />
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="ExerciseModels[i].Name" id="exerciseNameInput_@i" type="search" class="form-control ExerciseName" autocomplete="off" />
+                                    }
+                                    <span asp-validation-for="ExerciseModels[i].Name" class="text-danger"></span>
+                                    <div class="AutoCompleteDiv"></div>
+                                </div>
+                            </div>
+
+                            <div class="action-item col-sm-2 target">
+                                <div class="form-group">
+                                    <label asp-for="ExerciseModels[i].NumSets" class="control-label">Number of sets</label>
+                                    <select asp-for="ExerciseModels[i].NumSets" class="form-select NumSetsInput" aria-label="Default select">
+                                        <option selected value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="action-item col-sm-2 target">
+                                <div class="form-group">
+                                    <label asp-for="ExerciseModels[i].MasterReps" class="control-label">Number of reps</label>
+                                    <input asp-for="ExerciseModels[i].MasterReps" type="number" class="form-control MasterRepsInput" />
+                                </div>
+                            </div>
+
+                            <div class="action-item col-sm-2 target">
+                                <div class="form-group">
+                                    <label asp-for="ExerciseModels[i].MasterWeight" class="control-label">Weight</label>
+                                    <div style="display: flex;">
+                                        <input asp-for="ExerciseModels[i].MasterWeight" type="number" class="form-control MasterWeightInput" style="flex: 1;" />
+                                        <span style="flex: 1;">&nbsp Lbs</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row CustomRowSets HideOnLoad">
+                            @{
+                                for (int j = 0; j < 9; j++)
+                                {
+                                    int setNumber = j + 1;
+                                    <div class="CustomSetRow CustomSet_@j HideOnLoad">
+                                        <span class="SetNumberSpan">Set @setNumber</span>
+                                        <div class="action-item col-sm-2 Inline">
+                                            <div class="form-group">
+                                                <label asp-for="ExerciseModels[i].SetsList[j].Reps" class="control-label">Number of reps</label>
+                                                <input asp-for="ExerciseModels[i].SetsList[j].Reps" type="number" class="form-control RepsInput" />
+                                            </div>
+                                        </div>
+
+                                        <div class="action-item col-sm-2 Inline">
+                                            <div class="form-group">
+                                                <label asp-for="ExerciseModels[i].SetsList[j].Weight" class="control-label">Weight</label>
+                                                <div style="display: flex;">
+                                                    <input asp-for="ExerciseModels[i].SetsList[j].Weight" type="number" class="form-control WeightInput" style="flex: 1;" />
+                                                    <span style="flex: 1;">&nbsp Lbs</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        @* delete and custom sets buttons *@
+                        <div class="action-item col-sm-4 target">
+                            <div class="form-group">
+                                <br />
+                                <button type="button" id="CustomizeSetsButton_@Model.ExerciseModels[i].Order" class="btn btn-success col-sm-5 CustomizeSetsButton">Customize Sets</button>
+                                <button type="button" class="DeleteExercise btn btn-danger col-sm-5">Delete Exercise</button>
+                            </div>
+                        </div>
+
+                        @* hidden model properties for this exercise *@
+                        <input asp-for="ExerciseModels[i].Order" class="OrderInput" hidden />
+                        <input asp-for="ExerciseModels[i].CustomSets" class="CustomSetsInput" hidden />
+                    </div>
+                }
+            } @* end of for loop *@
+        </div>
+
+        <div>
+            <button id="addExercise" type="button" class="btn btn-warning">Add Exercise</button>
+            <span id="maxExercisesMessage" class="text-danger HideOnLoad">&nbspCannot add more than @Model.MaxNumExercises exercises.</span>
+        </div>
+
+        <br />
+        <button id="submitButton" type="button" class="btn btn-primary" onclick="PrepareClientValidation()">Create Workout</button>
+        <button id="submitForm" type="submit" hidden></button>
+        <div id="submitSpinner" class="spinner-border text-primary" role="status" hidden></div>
+
+        @* hidden model properties for workout *@
+        <div>
+            <input id="numExercises" asp-for="NumExercises" hidden />
+            <input id="maxExercises" asp-for="MaxNumExercises" hidden />
+            <input id="maxSets" asp-for="MaxNumSets" hidden />
+        </div>
+    </form>
+</div>
