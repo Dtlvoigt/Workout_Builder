@@ -15,12 +15,16 @@ namespace Workout_Builder.Controllers
         private readonly IWorkoutService _workoutContext;
         private readonly ILogger<WorkoutController> _logger;
         private readonly IConfiguration _configuration;
+        public readonly int _maxExercises;
+        public readonly int _maxSets;
 
         public WorkoutController(IWorkoutService context, ILogger<WorkoutController> logger, IConfiguration configuration)
         {
             _workoutContext = context;
             _logger = logger;
             _configuration = configuration;
+            _maxExercises = _configuration.GetValue<int>("MaxNumExercises");
+            _maxSets = _configuration.GetValue<int>("MaxNumSets");
         }
 
         [HttpGet]
@@ -52,12 +56,12 @@ namespace Workout_Builder.Controllers
                 //NewExercise = new Exercise(),
                 //AddExercise = false,
                 NumExercises = 1,
-                MaxNumExercises = maxExercises,
-                MaxNumSets = maxSets,
+                MaxNumExercises = _maxExercises,
+                MaxNumSets = _maxSets,
             };
 
             var exerciseList = await _workoutContext.GetExerciseSelectList();
-            for (int i = 0; i < maxExercises; i++)
+            for (int i = 0; i < _maxExercises; i++)
             {
                 var newModel = new ExerciseVM()
                 {
@@ -65,12 +69,12 @@ namespace Workout_Builder.Controllers
                     Order = i,
                     NumSets = 1,
                     ExerciseList = exerciseList,
-                    MaxNumExercises = maxExercises,
+                    MaxNumExercises = _maxExercises,
                     SetsList = new List<Set>(),
                     CustomSets = false,
                 };
 
-                for (int j = 0; j < maxSets; j++)
+                for (int j = 0; j < _maxSets; j++)
                 {
                     newModel.SetsList.Add(new Set());
                 }
@@ -218,6 +222,12 @@ namespace Workout_Builder.Controllers
             //ModelState.
 
             return View(newWorkoutVM);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditWorkout(int workoutID)
+        {
+
         }
 
         public IActionResult NewExercisePartial(int orderNum)
