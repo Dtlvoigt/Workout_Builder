@@ -44,14 +44,11 @@ namespace Workout_Builder.Controllers
         [HttpGet]
         public async Task<IActionResult> NewWorkout()
         {
-            int maxExercises = _configuration.GetValue<int>("MaxNumExercises");
-            int maxSets = _configuration.GetValue<int>("MaxNumSets");
-
-            var newWorkoutVM = new NewWorkoutVM()
+            var newWorkoutVM = new WorkoutVM()
             {
                 Workout = new Workout(),
                 //Exercises = new List<Exercise>(),
-                ExerciseModels = new List<NewExerciseViewModel>(),
+                ExerciseModels = new List<ExerciseVM>(),
                 //NewExercise = new Exercise(),
                 //AddExercise = false,
                 NumExercises = 1,
@@ -62,7 +59,7 @@ namespace Workout_Builder.Controllers
             var exerciseList = await _workoutContext.GetExerciseSelectList();
             for (int i = 0; i < maxExercises; i++)
             {
-                var newModel = new NewExerciseViewModel()
+                var newModel = new ExerciseVM()
                 {
                     Name = "",
                     Order = i,
@@ -85,7 +82,7 @@ namespace Workout_Builder.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewWorkout(NewWorkoutVM newWorkoutVM)
+        public async Task<IActionResult> NewWorkout(WorkoutVM newWorkoutVM)
         {
             if (newWorkoutVM == null || newWorkoutVM.ExerciseModels == null)
             {

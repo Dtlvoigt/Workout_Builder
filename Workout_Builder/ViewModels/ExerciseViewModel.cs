@@ -4,7 +4,7 @@ using Workout_Builder.Models;
 
 namespace Workout_Builder.ViewModels
 {
-    public class NewExerciseViewModel
+    public class ExerciseVM
     {
         //public Exercise Exercise { get; set; }
         [Required(ErrorMessage = "Exercise name is required")]
