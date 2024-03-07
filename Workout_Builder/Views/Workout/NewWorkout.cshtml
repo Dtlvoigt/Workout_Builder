@@ -149,8 +149,6 @@
 </div>
 
 
-<button type="button" onclick="getExercises()">Names</button>
-
 @section Scripts {
     <script>
 
@@ -414,6 +412,7 @@
             var numExercises = $("#numExercises").val();
             for (var i = Number(numExercises); i < @Model.MaxNumExercises; i++) {
                 $("#exerciseNameInput_" + i).val("0");
+                //$("#exerciseNameInput_" + i).val("");
             }
 
             //if all fields are ok, submit form to controller
