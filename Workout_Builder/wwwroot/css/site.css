@@ -43,3 +43,9 @@ body {
 .Inline {
     display: inline-block;
 }
+
+.WorkoutTemplates {
+    max-height: 400px;
+    max-width: 800px;
+    overflow: auto;
+}

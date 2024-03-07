@@ -1,4 +1,4 @@
-﻿@model Workout_Builder.ViewModels.HomeViewModel
+﻿@model HomeViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -10,18 +10,6 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-<div>
-    @if(Model.WorkoutTemplates != null)
-    {
-        foreach(var workout in Model.WorkoutTemplates)
-        {
-            <h2 id="h2_@workout.Name">@workout.Name</h2>
-            <br />
-            <br />
-        }
-    }
-</div>
+@await Html.PartialAsync("_WorkoutList", Model.WorkoutTemplates)
 
-
-
-<a id="newWorkoutButton" asp-action="NewWorkout" class="btn btn-danger col-sm-4">New Workout</a>
+<a id="newWorkoutButton" asp-action="NewWorkout" class="btn btn-success col-sm-4">New Workout</a>
