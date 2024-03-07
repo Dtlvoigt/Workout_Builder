@@ -10,7 +10,9 @@
         });
 
         //disable delete button on first exercise
-        $("#exerciseDiv_0").find($(".DeleteExercise").prop("disabled", true));
+        if ($("#numExercises").val() == 1) {
+            $("#exerciseDiv_0").find($(".DeleteExercise").prop("disabled", true));
+        }
 
         //creates first exercise
         //$('#addExercise').click();
