@@ -1,14 +1,17 @@
 ﻿@model List<Workout>
 
 <div>
-    <h3>Workout Templates</h3>
+    <h2>Workout Templates</h2>
     <div class="WorkoutTemplates">
         @if (Model != null)
         {
             foreach (var workout in Model)
             {
-                <h4 class="WorkoutName">@workout.Name</h4>
-                <br />
+                <div class="FlexContainer">
+                    <h4 class="WorkoutName">@workout.Name</h4>
+                    <a asp-action="EditWorkout" asp-route-id="@workout.Id" class="">View Workout</a>
+                    <br />
+                </div>
             }
         }
     </div>
