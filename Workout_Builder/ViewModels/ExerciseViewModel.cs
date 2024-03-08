@@ -17,7 +17,7 @@ namespace Workout_Builder.ViewModels
         public int NumSets { get; set; }
         public int MasterReps { get; set; }
         public int MasterWeight { get; set; }
-        public List<Set>? SetsList { get; set; }
+        public List<Set> SetsList { get; set; }
         public Boolean CustomSets { get; set; } = false;
     }
 }
