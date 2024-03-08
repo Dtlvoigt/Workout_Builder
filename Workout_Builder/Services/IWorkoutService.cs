@@ -8,6 +8,8 @@ namespace Workout_Builder.Services
         //search workouts
         Task<List<Workout>> GetUserTemplates(string userID);
         Task<List<Exercise>> GetUserExercises(string userID);
+        Task<Workout> GetWorkout(int workoutID);
+        Task<List<Exercise>> GetExercises(int workoutID);
 
 
         //updating workouts

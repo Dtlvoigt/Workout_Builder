@@ -6,7 +6,7 @@ namespace Workout_Builder.Models
     {
         [Key]
         public int Id { get; set; }
-        public Workout? Workout { get; set; }
+        public Workout Workout { get; set; }
         public ExerciseType? ExerciseType { get; set; }
         public String? CustomExerciseName { get; set; }
         public int Order { get; set; }

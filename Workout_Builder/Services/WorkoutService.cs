@@ -27,6 +27,22 @@ namespace Workout_Builder.Services
         // search workouts //
         /////////////////////
 
+        public async Task<Workout> GetWorkout(int workoutID)
+        {
+            var query = await _dbContext.Workouts.FirstOrDefaultAsync(w => w.Id == workoutID)
+                                                 .ConfigureAwait(false);
+            return query;
+        }
+
+        public async Task<List<Exercise>> GetExercises(int workoutID)
+        {
+            var query = await _dbContext.Exercises.Where(e => e.Workout.Id == workoutID)
+                                            .OrderBy(e => e.Order)
+                                            .ToListAsync()
+                                            .ConfigureAwait(false);
+            return query;
+        }
+
         public async Task<List<Workout>> GetUserTemplates(string userID)
         {
             IQueryable<Workout> workoutQuery;
