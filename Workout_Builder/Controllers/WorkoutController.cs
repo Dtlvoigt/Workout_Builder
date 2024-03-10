@@ -63,15 +63,9 @@ namespace Workout_Builder.Controllers
             var exerciseList = await _workoutContext.GetExerciseSelectList();
             for (int i = 0; i < _maxExercises; i++)
             {
-                var newModel = new ExerciseVM()
+                var newModel = new ExerciseVM(i)
                 {
-                    Name = "",
-                    Order = i,
-                    NumSets = 1,
                     ExerciseList = exerciseList,
-                    MaxNumExercises = _maxExercises,
-                    SetsList = new List<Set>(),
-                    CustomSets = false,
                 };
 
                 for (int j = 0; j < _maxSets; j++)
@@ -116,14 +110,14 @@ namespace Workout_Builder.Controllers
 
                     //use custom name field if the entered exercise doesn't match any in the db
                     string customType = "";
-                    if(exerciseType == null)
+                    if (exerciseType == null)
                     {
                         customType = model.Name;
                     }
 
                     //create json string that records individual sets info
                     string setsJsonString = "";
-                    if(model.CustomSets)
+                    if (model.CustomSets)
                     {
                         setsJsonString = _workoutContext.CreateSetJsonString(model.SetsList);
                     }
@@ -149,21 +143,6 @@ namespace Workout_Builder.Controllers
                 return RedirectToAction("Index");
             }
 
-            //remove placeholder names on exercises
-            //newWorkoutVM.ExerciseModels.Select(e => e.Exercise.ExerciseType.Name).
-            //                           .Where(n => n == "0").ToList()
-            //                           .ForEach(n => n = "");
-
-            //newWorkoutVM.ExerciseModels.Find(e => e.Exercise.ExerciseType.Name == "0").Exercise.ExerciseType.Name = "";
-            //foreach(var exerciseModel in newWorkoutVM.ExerciseModels)
-            //{
-            //    if(exerciseModel.Exercise.ExerciseType.Name == "0")
-            //    {
-            //        exerciseModel.Exercise.ExerciseType.Name = "";
-            //    }
-            //}
-            //ModelState.
-
             return View(newWorkoutVM);
         }
 
@@ -171,28 +150,32 @@ namespace Workout_Builder.Controllers
         [Route("Workout/EditWorkout/{workoutID:int}")]
         public async Task<IActionResult> EditWorkout(int workoutID)
         {
+            //find workout and exercises
+            var workout = await _workoutContext.GetWorkout(workoutID) ?? throw new Exception("No workout found with ID: " + workoutID);
+            var exercises = await _workoutContext.GetExercises(workoutID) ?? throw new Exception("No exercises found for workout: " + workoutID);
 
+            //create workout viewmodel
             var newWorkoutVM = new WorkoutVM()
             {
-                Workout = new Workout(),
+                Workout = workout,
                 ExerciseModels = new List<ExerciseVM>(),
-                NumExercises = 1,
+                NumExercises = exercises.Count(),
                 MaxNumExercises = _maxExercises,
                 MaxNumSets = _maxSets,
             };
 
+            //create exercise viewmodels
             var exerciseList = await _workoutContext.GetExerciseSelectList();
             for (int i = 0; i < _maxExercises; i++)
             {
-                var newModel = new ExerciseVM()
+                if(i < exercises.Count())
                 {
-                    Name = "",
-                    Order = i,
-                    NumSets = 1,
-                    ExerciseList = exerciseList,
-                    MaxNumExercises = _maxExercises,
-                    SetsList = new List<Set>(),
-                    CustomSets = false,
+
+                }
+
+                var newModel = new ExerciseVM(i)
+                {
+                    ExerciseList = exerciseList
                 };
 
                 for (int j = 0; j < _maxSets; j++)
@@ -201,6 +184,74 @@ namespace Workout_Builder.Controllers
                 }
 
                 newWorkoutVM.ExerciseModels.Add(newModel);
+            }
+
+            return View(newWorkoutVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditWorkout(WorkoutVM newWorkoutVM)
+        {
+            if (newWorkoutVM == null || newWorkoutVM.ExerciseModels == null)
+            {
+                throw new Exception("View Model is missing data");
+            }
+
+            //don't save changes if this user didn't create the workout
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("UserId is null");
+            if(newWorkoutVM.Workout.UserId != userID)
+            {
+                return View(newWorkoutVM);
+            }
+
+            if (ModelState.IsValid)
+            {
+                //create workout for current user
+                newWorkoutVM.Workout.UserId = userID;
+
+                //add workout to database
+                int workoutID = await _workoutContext.AddWorkout(newWorkoutVM.Workout).ConfigureAwait(false);
+
+                //add exercises to database
+                for (int i = 0; i < newWorkoutVM.NumExercises; i++)
+                {
+                    //obtain exercise information
+                    var model = newWorkoutVM.ExerciseModels[i];
+                    var exerciseType = await _workoutContext.GetExerciseByName(model.Name);
+
+                    //use custom name field if the entered exercise doesn't match any in the db
+                    string customType = "";
+                    if (exerciseType == null)
+                    {
+                        customType = model.Name;
+                    }
+
+                    //create json string that records individual sets info
+                    string setsJsonString = "";
+                    if (model.CustomSets)
+                    {
+                        setsJsonString = _workoutContext.CreateSetJsonString(model.SetsList);
+                    }
+
+                    //build new exercise
+                    var newExercise = new Exercise()
+                    {
+                        Workout = newWorkoutVM.Workout,
+                        Order = model.Order,
+                        NumSets = model.NumSets,
+                        MasterReps = model.MasterReps,
+                        MasterWeight = model.MasterWeight,
+                        ExerciseType = exerciseType,
+                        CustomExerciseName = customType,
+                        IsPounds = newWorkoutVM.IsPounds,
+                        CustomSets = model.CustomSets,
+                        SetsJsonString = setsJsonString,
+                    };
+
+                    int exerciseID = await _workoutContext.AddExercise(newExercise);
+                }
+
+                return RedirectToAction("Index");
             }
 
             return View(newWorkoutVM);
