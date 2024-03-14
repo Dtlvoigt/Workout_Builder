@@ -37,6 +37,7 @@ namespace Workout_Builder.Services
         public async Task<List<Exercise>> GetExercises(int workoutID)
         {
             var query = await _dbContext.Exercises.Where(e => e.Workout.Id == workoutID)
+                                                  .Include(e => e.ExerciseType)
                                             .OrderBy(e => e.Order)
                                             .ToListAsync()
                                             .ConfigureAwait(false);
