@@ -48,6 +48,9 @@ namespace Workout_Builder.Controllers
         [HttpGet]
         public async Task<IActionResult> NewWorkout()
         {
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("userID is null");
+            var templates = await _workoutContext.GetUserTemplates(userID).ConfigureAwait(false);
+
             var newWorkoutVM = new WorkoutVM()
             {
                 Workout = new Workout(),
@@ -58,6 +61,7 @@ namespace Workout_Builder.Controllers
                 NumExercises = 1,
                 MaxNumExercises = _maxExercises,
                 MaxNumSets = _maxSets,
+                CurrentTemplates = templates,
             };
 
             var exerciseList = await _workoutContext.GetExerciseSelectList();
@@ -168,21 +172,34 @@ namespace Workout_Builder.Controllers
             var exerciseList = await _workoutContext.GetExerciseSelectList();
             for (int i = 0; i < _maxExercises; i++)
             {
+                var newModel = new ExerciseVM();
                 if(i < exercises.Count())
                 {
-
+                    //existing exercises
+                    newModel = new ExerciseVM(exercises[i]);
+                    if (!String.IsNullOrEmpty(exercises[i].SetsJsonString))
+                    {
+                        newModel.SetsList = _workoutContext.GetSetsFromString(exercises[i].SetsJsonString);
+                    }
+                    else
+                    {
+                        for (int j = 0; j < _maxSets; j++)
+                        {
+                            newModel.SetsList.Add(new Set());
+                        }
+                    }
+                }
+                else
+                {
+                    //blank exercises
+                    newModel = new ExerciseVM(i);
+                    for (int j = 0; j < _maxSets; j++)
+                    {
+                        newModel.SetsList.Add(new Set());
+                    }
                 }
 
-                var newModel = new ExerciseVM(i)
-                {
-                    ExerciseList = exerciseList
-                };
-
-                for (int j = 0; j < _maxSets; j++)
-                {
-                    newModel.SetsList.Add(new Set());
-                }
-
+                newModel.ExerciseList = exerciseList;
                 newWorkoutVM.ExerciseModels.Add(newModel);
             }
 
