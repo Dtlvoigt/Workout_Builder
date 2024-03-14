@@ -38,9 +38,9 @@ namespace Workout_Builder.Services
         {
             var query = await _dbContext.Exercises.Where(e => e.Workout.Id == workoutID)
                                                   .Include(e => e.ExerciseType)
-                                            .OrderBy(e => e.Order)
-                                            .ToListAsync()
-                                            .ConfigureAwait(false);
+                                                  .OrderBy(e => e.Order)
+                                                  .ToListAsync()
+                                                  .ConfigureAwait(false);
             return query;
         }
 
@@ -191,6 +191,16 @@ namespace Workout_Builder.Services
         {
             var jsonString = JsonSerializer.Serialize(sets);
             return jsonString;
+        }
+
+        public List<Set> GetSetsFromString(string jsonString)
+        {
+            if(string.IsNullOrEmpty(jsonString))
+            {
+                throw new Exception("Set string is empty");
+            }
+            var sets = JsonSerializer.Deserialize<List<Set>>(jsonString);
+            return sets;
         }
 
     }

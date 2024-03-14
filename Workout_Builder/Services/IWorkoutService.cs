@@ -28,5 +28,6 @@ namespace Workout_Builder.Services
         Task LoadExerciseTypes();
 
         string CreateSetJsonString(List<Set> sets);
+        List<Set> GetSetsFromString(string jsonString);
     }
 }
