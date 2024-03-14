@@ -72,11 +72,6 @@ namespace Workout_Builder.Controllers
                     ExerciseList = exerciseList,
                 };
 
-                for (int j = 0; j < _maxSets; j++)
-                {
-                    newModel.SetsList.Add(new Set());
-                }
-
                 newWorkoutVM.ExerciseModels.Add(newModel);
             }
 
@@ -123,6 +118,13 @@ namespace Workout_Builder.Controllers
                     string setsJsonString = "";
                     if (model.CustomSets)
                     {
+                        //ensure unused sets are zeroed out
+                        for(int j = model.NumSets; j < _maxSets; j++)
+                        {
+                            model.SetsList[j].Reps = 0;
+                            model.SetsList[j].Weight = 0;
+                        }
+
                         setsJsonString = _workoutContext.CreateSetJsonString(model.SetsList);
                     }
 
