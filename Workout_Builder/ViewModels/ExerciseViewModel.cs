@@ -7,6 +7,7 @@ namespace Workout_Builder.ViewModels
 {
     public class ExerciseVM
     {
+        public ExerciseVM() { }
         public ExerciseVM(int order)
         {
             Name = "";
