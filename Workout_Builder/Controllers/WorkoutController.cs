@@ -67,7 +67,7 @@ namespace Workout_Builder.Controllers
             var exerciseList = await _workoutContext.GetExerciseSelectList();
             for (int i = 0; i < _maxExercises; i++)
             {
-                var newModel = new ExerciseVM(i)
+                var newModel = new ExerciseVM(i, _maxSets)
                 {
                     ExerciseList = exerciseList,
                 };
@@ -176,27 +176,12 @@ namespace Workout_Builder.Controllers
                 if(i < exercises.Count())
                 {
                     //existing exercises
-                    newModel = new ExerciseVM(exercises[i]);
-                    if (!String.IsNullOrEmpty(exercises[i].SetsJsonString))
-                    {
-                        newModel.SetsList = _workoutContext.GetSetsFromString(exercises[i].SetsJsonString);
-                    }
-                    else
-                    {
-                        for (int j = 0; j < _maxSets; j++)
-                        {
-                            newModel.SetsList.Add(new Set());
-                        }
-                    }
+                    newModel = new ExerciseVM(exercises[i], _maxSets);
                 }
                 else
                 {
                     //blank exercises
-                    newModel = new ExerciseVM(i);
-                    for (int j = 0; j < _maxSets; j++)
-                    {
-                        newModel.SetsList.Add(new Set());
-                    }
+                    newModel = new ExerciseVM(i, _maxSets);
                 }
 
                 newModel.ExerciseList = exerciseList;
