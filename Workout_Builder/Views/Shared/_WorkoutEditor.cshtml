@@ -17,10 +17,13 @@
                 var hiddenDivStyling = "";
                 for (int i = 0; i < Model.ExerciseModels.Count; i++)
                 {
+                    //if this variable is set then the div will be hidden
+                    var hiddenDivStyling = "";
                     if (i >= Model.NumExercises)
                     {
                         hiddenDivStyling = "HideOnLoad";
                     }
+
                     <div id="exerciseDiv_@i" class="row ExerciseDiv @hiddenDivStyling">
                         <br />
 
