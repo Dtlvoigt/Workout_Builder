@@ -188,8 +188,8 @@
                 rowElement.find(setID).show();
 
                 //disable master reps and weight inputs
-                $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', true);
-                $(this).parent().parent().parent().find(".MasterWeightInput").prop('disabled', true);
+                $(this).parent().parent().parent().find(".MasterRepsInput").prop('readonly', true);
+                $(this).parent().parent().parent().find(".MasterWeightInput").prop('readonly', true);
             }
             //change text on button and set customSets variable
             $(this).html("Hide Sets");
@@ -210,8 +210,8 @@
             $(this).parent().parent().parent().find(".CustomSetsInput").prop('checked', false);
 
             //re-enable overall reps and weight inputs
-            $(this).parent().parent().parent().find(".MasterRepsInput").prop('disabled', false);
-            $(this).parent().parent().parent().find(".MasterWeightInput").prop('disabled', false);
+            $(this).parent().parent().parent().find(".MasterRepsInput").prop('readonly', false);
+            $(this).parent().parent().parent().find(".MasterWeightInput").prop('readonly', false);
         }
     });
 
@@ -290,6 +290,10 @@
 
     function SubmitToController() {
         //$('#addExerciseInput').prop('checked', false);
+        //re-enable disabled inputs so that they're submitted
+        // $(".MasterWeightInput").prop('disabled', false);
+        // $(".MasterRepsInput").prop('disabled', false);
+
         $("#submitForm").click();
     }
 
