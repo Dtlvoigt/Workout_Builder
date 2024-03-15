@@ -14,7 +14,6 @@
         <div id="exercisesSection">
             <h3 id="exercisesLabel">Exercises</h3>
             @{
-                var hiddenDivStyling = "";
                 for (int i = 0; i < Model.ExerciseModels.Count; i++)
                 {
                     //if this variable is set then the div will be hidden
@@ -64,7 +63,14 @@
                             <div class="action-item col-sm-2 target">
                                 <div class="form-group">
                                     <label asp-for="ExerciseModels[i].MasterReps" class="control-label">Number of reps</label>
-                                    <input asp-for="ExerciseModels[i].MasterReps" type="number" class="form-control MasterRepsInput" />
+                                    @if (Model.ExerciseModels[i].CustomSets)
+                                    {
+                                        <input asp-for="ExerciseModels[i].MasterReps" type="number" class="form-control MasterRepsInput" readonly />
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="ExerciseModels[i].MasterReps" type="number" class="form-control MasterRepsInput" />
+                                    }
                                 </div>
                             </div>
 
@@ -72,17 +78,62 @@
                                 <div class="form-group">
                                     <label asp-for="ExerciseModels[i].MasterWeight" class="control-label">Weight</label>
                                     <div style="display: flex;">
-                                        <input asp-for="ExerciseModels[i].MasterWeight" type="number" class="form-control MasterWeightInput" style="flex: 1;" />
+                                        @if (Model.ExerciseModels[i].CustomSets)
+                                        {
+                                            <input asp-for="ExerciseModels[i].MasterWeight" type="number" class="form-control MasterWeightInput" style="flex: 1;" readonly />
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="ExerciseModels[i].MasterWeight" type="number" class="form-control MasterWeightInput" style="flex: 1;" />
+                                        }
                                         <span style="flex: 1;">&nbsp Lbs</span>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
-                        <div class="row CustomRowSets HideOnLoad">
-                            @{
-                                for (int j = 0; j < 9; j++)
+                        @* show custom sets if this exercise has them *@
+                        @if (Model.ExerciseModels[i].CustomSets)
+                        {
+                            <div class="row CustomRowSets">
+                                @for (int j = 0; j < 9; j++)
+                                {
+                                    int setNumber = j + 1;
+                                    if (setNumber <= Model.ExerciseModels[i].NumSets)
+                                    {
+                                        hiddenDivStyling = "";
+                                    }
+                                    else
+                                    {
+                                        hiddenDivStyling = "HideOnLoad";
+                                    }
+                                    <div class="CustomSetRow CustomSet_@j @hiddenDivStyling">
+                                        <span class="SetNumberSpan">Set @setNumber</span>
+                                        <div class="action-item col-sm-2 Inline">
+                                            <div class="form-group">
+                                                <label asp-for="ExerciseModels[i].SetsList[j].Reps" class="control-label">Number of reps</label>
+                                                <input asp-for="ExerciseModels[i].SetsList[j].Reps" type="number" class="form-control RepsInput" />
+                                            </div>
+                                        </div>
+
+                                        <div class="action-item col-sm-2 Inline">
+                                            <div class="form-group">
+                                                <label asp-for="ExerciseModels[i].SetsList[j].Weight" class="control-label">Weight</label>
+                                                <div style="display: flex;">
+                                                    <input asp-for="ExerciseModels[i].SetsList[j].Weight" type="number" class="form-control WeightInput" style="flex: 1;" />
+                                                    <span style="flex: 1;">&nbsp Lbs</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        @* hide all custom sets if this exercise doesn't have any *@
+                        else
+                        {
+                            <div class="row CustomRowSets HideOnLoad">
+                                @for (int j = 0; j < 9; j++)
                                 {
                                     int setNumber = j + 1;
                                     <div class="CustomSetRow CustomSet_@j HideOnLoad">
@@ -105,14 +156,25 @@
                                         </div>
                                     </div>
                                 }
-                            }
-                        </div>
+                            </div>
+                        }
+
+
 
                         @* delete and custom sets buttons *@
                         <div class="action-item col-sm-4 target">
                             <div class="form-group">
                                 <br />
-                                <button type="button" id="CustomizeSetsButton_@Model.ExerciseModels[i].Order" class="btn btn-success col-sm-5 CustomizeSetsButton">Customize Sets</button>
+                                @* change button name if custom sets are showing *@
+                                @if (Model.ExerciseModels[i].CustomSets)
+                                {
+                                    <button type="button" id="CustomizeSetsButton_@Model.ExerciseModels[i].Order" class="btn btn-success col-sm-5 CustomizeSetsButton">Hide Sets</button>
+                                }
+                                else
+                                {
+                                    <button type="button" id="CustomizeSetsButton_@Model.ExerciseModels[i].Order" class="btn btn-success col-sm-5 CustomizeSetsButton">Customize Sets</button>
+                                }
+
                                 <button type="button" class="DeleteExercise btn btn-danger col-sm-5">Delete Exercise</button>
                             </div>
                         </div>
