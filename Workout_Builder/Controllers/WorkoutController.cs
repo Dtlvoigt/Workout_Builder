@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Diagnostics;
@@ -28,13 +29,14 @@ namespace Workout_Builder.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             //if the user isn't logged in, show them the login screen
-            if (User.Identity != null && !User.Identity.IsAuthenticated)
-            {
-                return Redirect("Identity/Account/Login");
-            }
+            //if (User.Identity != null && !User.Identity.IsAuthenticated)
+            //{
+            //    return Redirect("Identity/Account/Login");
+            //}
 
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("userID is null");
             var templates = await _workoutContext.GetUserTemplates(userID).ConfigureAwait(false);
